@@ -68,7 +68,7 @@ export default function TransferPage() {
       counterparty: recipient.name,
     });
 
-    setMessage(`Transfer successful. ${formatCurrency(value, user.currency)} sent to ${recipient.name}.`);
+    setMessage(`Preview only: ${formatCurrency(value, user.currency)} was recorded in this browser for ${recipient.name}. No funds were transferred.`);
     setAmount(0);
     setNote("");
   };
@@ -130,9 +130,9 @@ export default function TransferPage() {
             <div className="text-xs uppercase tracking-[0.22em] text-[#d7b56d]">Available Balance</div>
             <div className="mt-4 font-display text-4xl">{formatCurrency(user.balance, user.currency)}</div>
             <div className="mt-8 space-y-4 text-sm text-slate-200">
-              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">🔐</span>Protected intra-bank transfer</div>
-              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">✅</span>Real-time confirmation to beneficiary</div>
-              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📊</span>Transfer fees and limits tracked automatically</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">ℹ️</span>No bank transfer network is connected</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📱</span>No notification is sent to recipients</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">⚠️</span>No real fees, limits, or payment processing apply</div>
             </div>
           </div>
         </div>

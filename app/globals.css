@@ -41,6 +41,20 @@ main {
 	isolation: isolate;
 }
 
+.service-preview-notice {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 4px 10px;
+	border-bottom: 1px solid #d7b56d;
+	background: #fff6df;
+	padding: 9px 16px;
+	color: #263449;
+	font-size: 12px;
+	line-height: 1.5;
+	text-align: center;
+}
+
 main::before {
 	position: fixed;
 	z-index: -1;

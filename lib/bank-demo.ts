@@ -39,112 +39,9 @@ const USER_STORAGE_KEY = "siam_heritage_users";
 const CURRENT_USER_KEY = "siam_heritage_current_user";
 const TRANSACTION_KEY = "siam_heritage_transactions";
 
-export const demoUsers: BankUser[] = [
-  {
-    id: "user-001",
-    name: "Nadia Rahman",
-    email: "nadia.rahman@thaipattana.example",
-    phone: "+8801700000001",
-    country: "Bangladesh",
-    accountNumber: "5001000001",
-    password: "demo123",
-    avatar: "👩",
-    role: "user",
-    status: "Active",
-    kycStatus: "Verified",
-    balance: 168450,
-    cardLast4: "4876",
-    currency: "BDT",
-    address: "Dhaka, Bangladesh",
-    createdAt: "2024-02-11",
-    lastLogin: "2026-10-06",
-  },
-  {
-    id: "user-002",
-    name: "Arun Wongsawat",
-    email: "arun.wongsawat@thaipattana.example",
-    phone: "+66810000002",
-    country: "Thailand",
-    accountNumber: "5001000002",
-    password: "demo123",
-    avatar: "👨",
-    role: "user",
-    status: "Active",
-    kycStatus: "Verified",
-    balance: 980000,
-    cardLast4: "2019",
-    currency: "THB",
-    address: "Bangkok, Thailand",
-    createdAt: "2024-03-08",
-    lastLogin: "2026-10-06",
-  },
-  {
-    id: "admin-001",
-    name: "Admin Director",
-    email: "admin@thaipattana.example",
-    phone: "+6625550199",
-    country: "Thailand",
-    accountNumber: "ADMIN-001",
-    password: "admin123",
-    avatar: "👨‍💼",
-    role: "admin",
-    status: "Active",
-    kycStatus: "Verified",
-    balance: 0,
-    cardLast4: "0000",
-    currency: "THB",
-    address: "Bangkok, Thailand",
-    createdAt: "2024-01-02",
-    lastLogin: "2026-10-06",
-  },
-];
+export const demoUsers: BankUser[] = [];
 
-export const demoTransactions: Transaction[] = [
-  {
-    id: "tx-101",
-    type: "Cash In",
-    title: "bKash cash-in",
-    amount: 5000,
-    currency: "BDT",
-    method: "bKash",
-    status: "Completed",
-    date: "2026-10-05",
-    counterparty: "Nadia Rahman",
-  },
-  {
-    id: "tx-102",
-    type: "Transfer",
-    title: "Salary deposit",
-    amount: 25000,
-    currency: "BDT",
-    method: "Bank transfer",
-    status: "Completed",
-    date: "2026-10-04",
-    counterparty: "Thai Pattana Global Payroll",
-  },
-  {
-    id: "tx-103",
-    type: "Cash Out",
-    title: "Cash-out to Nagad",
-    amount: 7000,
-    currency: "BDT",
-    method: "Nagad",
-    status: "Completed",
-    date: "2026-10-03",
-    counterparty: "Nagad",
-  },
-  {
-    id: "tx-104",
-    type: "Bill",
-    title: "Utility payment",
-    amount: 1200,
-    currency: "THB",
-    method: "Electricity bill",
-    status: "Pending",
-    date: "2026-10-02",
-    counterparty: "Bangkok Electricity",
-  },
-];
+export const demoTransactions: Transaction[] = [];
 
 export function getUsers(): BankUser[] {
   if (typeof window === "undefined") return demoUsers;
@@ -153,13 +50,13 @@ export function getUsers(): BankUser[] {
   if (raw) {
     try {
       const parsed = JSON.parse(raw) as BankUser[];
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        const migrated = parsed.map((user) => ({
+      if (Array.isArray(parsed)) {
+        const migrated = parsed.filter((user) => !["user-001", "user-002", "admin-001"].includes(user.id) && user.role !== "admin").map((user) => ({
           ...user,
           email: user.email.replace(/@siamheritagebank\.com$/i, "@thaipattana.example"),
-        }));
+        })).filter((user) => user.role !== "admin");
 
-        if (migrated.some((user, index) => user.email !== parsed[index].email)) {
+        if (JSON.stringify(migrated) !== JSON.stringify(parsed)) {
           window.localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(migrated));
         }
 
@@ -206,7 +103,14 @@ export function getTransactions(): Transaction[] {
   if (raw) {
     try {
       const parsed = JSON.parse(raw) as Transaction[];
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        const sampleTransactionIds = ["tx-101", "tx-102", "tx-103", "tx-104"];
+        const cleaned = parsed.filter((transaction) => !sampleTransactionIds.includes(transaction.id));
+        if (cleaned.length !== parsed.length) {
+          window.localStorage.setItem(TRANSACTION_KEY, JSON.stringify(cleaned));
+        }
+        return cleaned;
+      }
     } catch {
       // ignore invalid storage
     }
@@ -242,26 +146,26 @@ export function formatCurrency(value: number, currency = "BDT") {
 export function getWalletOptions(country: string) {
   const map: Record<string, { name: string; code: string; fee: string }[]> = {
     Bangladesh: [
-      { name: "bKash", code: "BK", fee: "1.5%" },
-      { name: "Nagad", code: "NG", fee: "1.5%" },
-      { name: "Rocket", code: "RK", fee: "1.8%" },
-      { name: "Upay", code: "UP", fee: "1.4%" },
+      { name: "bKash", code: "BK", fee: "Not connected" },
+      { name: "Nagad", code: "NG", fee: "Not connected" },
+      { name: "Rocket", code: "RK", fee: "Not connected" },
+      { name: "Upay", code: "UP", fee: "Not connected" },
     ],
     Thailand: [
-      { name: "PromptPay", code: "PP", fee: "0.5%" },
-      { name: "TrueMoney", code: "TM", fee: "0.8%" },
-      { name: "KBank", code: "KB", fee: "1.0%" },
-      { name: "SCB", code: "SC", fee: "0.6%" },
+      { name: "PromptPay", code: "PP", fee: "Not connected" },
+      { name: "TrueMoney", code: "TM", fee: "Not connected" },
+      { name: "KBank", code: "KB", fee: "Not connected" },
+      { name: "SCB", code: "SC", fee: "Not connected" },
     ],
     Singapore: [
-      { name: "PayNow", code: "PN", fee: "0.8%" },
-      { name: "Bank Transfer", code: "BT", fee: "0.7%" },
-      { name: "GrabPay", code: "GP", fee: "1.2%" },
+      { name: "PayNow", code: "PN", fee: "Not connected" },
+      { name: "Bank Transfer", code: "BT", fee: "Not connected" },
+      { name: "GrabPay", code: "GP", fee: "Not connected" },
     ],
     default: [
-      { name: "Bank Transfer", code: "BT", fee: "0.9%" },
-      { name: "Wallet Transfer", code: "WT", fee: "1.1%" },
-      { name: "Cash Deposit", code: "CD", fee: "0.0%" },
+      { name: "Bank Transfer", code: "BT", fee: "Not connected" },
+      { name: "Wallet Transfer", code: "WT", fee: "Not connected" },
+      { name: "Cash Deposit", code: "CD", fee: "Not connected" },
     ],
   };
 

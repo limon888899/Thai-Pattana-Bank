@@ -36,7 +36,7 @@ export default function ProfilePage() {
     const nextUsers = users.map((item) => (item.id === user.id ? { ...item, ...form } : item));
     setUsers(nextUsers);
     setUser({ ...user, ...form });
-    setMessage("Profile updated successfully.");
+    setMessage("Profile changes are saved in this browser only; they are not sent to a bank.");
   };
 
   const handlePasswordChange = (event: React.FormEvent) => {
@@ -50,7 +50,7 @@ export default function ProfilePage() {
     const nextUsers = users.map((item) => (item.id === user.id ? { ...item, password } : item));
     setUsers(nextUsers);
     setUser({ ...user, password });
-    setMessage("Password updated successfully.");
+    setMessage("Password changes are saved in this browser only; they do not update a bank account.");
     setPassword("");
   };
 
@@ -115,7 +115,7 @@ export default function ProfilePage() {
             </button>
 
             <div className="rounded-2xl bg-[#0c2340] p-4 text-sm text-slate-200">
-              <span aria-hidden="true" className="bank-icon mr-2">🛡️</span>Device verification, encrypted session handling, and fraud alerts are active for this account.
+              <span aria-hidden="true" className="bank-icon mr-2">ℹ️</span>Profile information is stored in this browser only. No bank security or fraud-monitoring service is connected.
             </div>
           </form>
         </div>

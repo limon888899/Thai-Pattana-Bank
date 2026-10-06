@@ -50,7 +50,7 @@ export default function CashInPage() {
       counterparty: reference || method,
     });
 
-    setMessage(`Cash in successful. ${formatCurrency(value, user.currency)} added to your account.`);
+    setMessage(`Preview only: ${formatCurrency(value, user.currency)} was recorded in this browser. No funds were deposited.`);
     setAmount(0);
     setReference("");
   };
@@ -118,9 +118,9 @@ export default function CashInPage() {
             <div className="text-xs uppercase tracking-[0.22em] text-[#d7b56d]">Current Balance</div>
             <div className="mt-4 font-display text-4xl">{formatCurrency(user.balance, user.currency)}</div>
             <div className="mt-8 space-y-4 text-sm text-slate-200">
-              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">🔐</span>Secure transfer confirmation with protected verification</div>
-              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📱</span>Auto-notification sent to your registered phone</div>
-              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">🛡️</span>Weekly limit tracking and fraud alerts enabled</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">ℹ️</span>No bank transfer or deposit is connected</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📱</span>No SMS or phone notification is sent</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">⚠️</span>Amounts only change the local browser preview</div>
             </div>
           </div>
         </div>

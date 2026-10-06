@@ -54,7 +54,7 @@ export default function CashOutPage() {
       counterparty: method,
     });
 
-    setMessage(`Cash out approved. ${formatCurrency(value, user.currency)} withdrawn successfully.`);
+    setMessage(`Preview only: ${formatCurrency(value, user.currency)} was recorded in this browser. No withdrawal or payment occurred.`);
     setAmount(0);
   };
 
@@ -110,9 +110,9 @@ export default function CashOutPage() {
             <div className="text-xs uppercase tracking-[0.22em] text-[#d7b56d]">Account Balance</div>
             <div className="mt-4 font-display text-4xl">{formatCurrency(user.balance, user.currency)}</div>
             <div className="mt-8 space-y-4 text-sm text-slate-200">
-              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">🛡️</span>Daily limit protection active</div>
-              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📋</span>Approval logs stored under secure audit trail</div>
-              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📱</span>Transaction confirmation SMS enabled</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">ℹ️</span>No bank withdrawal or wallet is connected</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📋</span>No external approval or audit service is connected</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📱</span>No payment or SMS is sent</div>
             </div>
           </div>
         </div>

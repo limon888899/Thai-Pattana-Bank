@@ -17,10 +17,10 @@ const services = [
 ];
 
 const highlights = [
-  "Institutional-grade security",
-  "24/7 customer support",
-  "Expert relationship banking",
-  "Designed for modern Thailand",
+  "Personal banking information",
+  "Business service overview",
+  "Wealth planning information",
+  "Digital access preview",
 ];
 
 export default function Home() {
@@ -93,31 +93,31 @@ export default function Home() {
             <div className="rounded-[24px] bg-white p-6 text-slate-900 shadow-lg">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-slate-500">Client advisory</p>
+                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-slate-500">Service overview</p>
                   <h2 className="mt-2 font-display text-2xl text-[#0c2340]">Smart financial planning</h2>
                 </div>
                 <div className="rounded-full bg-[#f4ecd8] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#0c2340]">
-                  2026
+                  Information
                 </div>
               </div>
 
               <div className="mt-8 space-y-4">
                 <div className="rounded-2xl bg-slate-50 p-4">
                   <div className="flex items-center justify-between text-sm text-slate-500">
-                    <span>Portfolio value</span>
-                    <span>+12.4%</span>
+                    <span>Personal banking</span>
+                    <span>Accounts</span>
                   </div>
-                  <div className="mt-3 font-display text-3xl text-[#0c2340]">฿2.84M</div>
+                  <div className="mt-3 font-display text-3xl text-[#0c2340]">Everyday services</div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="rounded-2xl bg-[#0c2340] p-4 text-white">
-                    <p className="text-slate-300">Savings</p>
-                    <p className="mt-2 font-display text-2xl text-[#f4d899]">฿480K</p>
+                    <p className="text-slate-300">Business</p>
+                    <p className="mt-2 font-display text-lg text-[#f4d899]">Services</p>
                   </div>
                   <div className="rounded-2xl border border-slate-200 p-4">
-                    <p className="text-slate-500">Support</p>
-                    <p className="mt-2 font-display text-2xl text-[#0c2340]">24/7</p>
+                    <p className="text-slate-500">Planning</p>
+                    <p className="mt-2 font-display text-lg text-[#0c2340]">Information</p>
                   </div>
                 </div>
               </div>
@@ -129,10 +129,10 @@ export default function Home() {
       <section className="border-y border-slate-200 bg-[#f8fafc]">
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 px-6 py-8 text-center md:grid-cols-4 md:px-8">
           {[
-            { value: "฿48B+", label: "Assets under guidance" },
-            { value: "190K+", label: "Client relationships" },
-            { value: "26", label: "Branches across Thailand" },
-            { value: "99.9%", label: "Service reliability" },
+            { value: "Personal", label: "Banking information" },
+            { value: "Business", label: "Service overview" },
+            { value: "Wealth", label: "Planning information" },
+            { value: "Digital", label: "Access preview" },
           ].map((item) => (
             <div key={item.label} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60">
               <div className="font-display text-3xl text-[#0c2340]">{item.value}</div>
@@ -150,10 +150,10 @@ export default function Home() {
           </div>
           <div className="space-y-5 text-lg leading-8 text-slate-600">
             <p>
-              We bring together modern banking products with a deeply human approach — helping clients protect savings, move capital confidently, and plan for generations ahead.
+              This independent website presents general information about personal, business, and wealth-planning topics in an institutional visual format.
             </p>
             <p>
-              From personal accounts to tailored business advisory, Thai Pattana Global Commercial Bank PCL supports the ambition of a stronger, more connected Thailand.
+              It is not operated by or connected to a licensed bank and cannot provide financial products, advice, or customer support.
             </p>
           </div>
         </div>
@@ -195,12 +195,12 @@ export default function Home() {
           <div className="rounded-[32px] bg-[#f7f3eb] p-8 shadow-xl ring-1 ring-slate-200">
             <div className="rounded-[24px] bg-white p-6 shadow-md ring-1 ring-slate-200">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Risk oversight</span>
-                <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700">secure</span>
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Service status</span>
+                <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-amber-700">Preview</span>
               </div>
-              <div className="mt-6 font-display text-5xl text-[#0c2340]">99.97%</div>
+              <div className="mt-6 font-display text-4xl text-[#0c2340]">Not connected</div>
               <p className="mt-3 text-sm leading-7 text-slate-600">
-                Continuous monitoring, proactive compliance, and secure digital infrastructure designed to maintain confidence at every touchpoint.
+                This independent website preview is not connected to banking, identity verification, or payment infrastructure.
               </p>
             </div>
           </div>
@@ -234,14 +234,11 @@ export default function Home() {
           <span className="text-xs font-semibold uppercase tracking-[0.24em] text-[#d7b56d]">Begin your banking journey</span>
           <h2 className="mt-4 font-display text-4xl text-white">Let’s shape a stronger financial future together.</h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-300">
-            Speak with our team to learn how Thai Pattana Global Commercial Bank PCL can support your personal goals, your business, and your long-term plans.
+            This independent website preview does not provide customer support or banking services. Use verified official channels for financial enquiries.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <a href="mailto:hello@thaipattana.example" className="rounded-full bg-[#d7b56d] px-7 py-3.5 text-sm font-semibold text-[#0c2340] transition hover:bg-[#e4c77d]">
-              hello@thaipattana.example
-            </a>
-            <a href="tel:+6625550199" className="rounded-full border border-white/25 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10">
-              +66 2 555 0199
+            <a href="#services" className="rounded-full bg-[#d7b56d] px-7 py-3.5 text-sm font-semibold text-[#0c2340] transition hover:bg-[#e4c77d]">
+              Explore services
             </a>
           </div>
         </div>

@@ -147,7 +147,7 @@ export default function DashboardPage() {
               <div aria-hidden="true" className="bank-icon text-2xl">{item.icon}</div>
               <div className="mt-4 text-sm text-slate-500">{item.label}</div>
               <div className="mt-2 font-display text-2xl text-[#0c2340]">
-                {item.label === "Available Balance" ? formatCurrency(user.balance, user.currency) : item.label === "Monthly Spend" ? "৳42,800" : item.label === "Transfers" ? "24" : "08"}
+                {item.label === "Available Balance" ? formatCurrency(user.balance, user.currency) : item.label === "Monthly Spend" ? formatCurrency(0, user.currency) : "0"}
               </div>
             </div>
           ))}
@@ -171,10 +171,15 @@ export default function DashboardPage() {
           <div className="rounded-[28px] bg-white p-6 shadow-sm ring-1 ring-slate-200">
             <div className="mb-5 flex items-center justify-between">
               <h2 className="font-display text-2xl text-[#0c2340]">Recent Activity</h2>
-              <div className="text-sm text-slate-500">Updated today</div>
+              <div className="text-sm text-slate-500">Browser preview</div>
             </div>
 
             <div className="space-y-4">
+              {transactions.length === 0 && (
+                <p className="rounded-xl bg-slate-50 px-4 py-5 text-sm text-slate-500">
+                  No activity has been recorded in this browser.
+                </p>
+              )}
               {transactions.slice(0, 5).map((item) => (
                 <div key={item.id} className="flex items-center justify-between border-b border-slate-200 pb-3 last:border-b-0 last:pb-0">
                   <div>
@@ -196,7 +201,7 @@ export default function DashboardPage() {
           <div className="space-y-6 rounded-[28px] bg-white p-6 shadow-sm ring-1 ring-slate-200">
             <div>
               <h2 className="font-display text-2xl text-[#0c2340]">Country Wallets</h2>
-              <p className="mt-2 text-sm text-slate-500">Domestic payment networks supported for your region.</p>
+              <p className="mt-2 text-sm text-slate-500">Network names are informational only and are not connected to this website.</p>
             </div>
 
             <div className="space-y-3">
@@ -206,7 +211,7 @@ export default function DashboardPage() {
                     <div className="font-medium text-slate-800"><span aria-hidden="true" className="bank-icon mr-2">💸</span>{option.name}</div>
                     <div className="text-xs uppercase tracking-[0.14em] text-slate-500">{option.code}</div>
                   </div>
-                  <div className="rounded-full bg-[#d7b56d]/15 px-3 py-1 text-xs font-semibold text-[#0c2340]">{option.fee} fee</div>
+                  <div className="rounded-full bg-[#d7b56d]/15 px-3 py-1 text-xs font-semibold text-[#0c2340]">{option.fee}</div>
                 </div>
               ))}
             </div>
@@ -215,9 +220,9 @@ export default function DashboardPage() {
 
         <div className="mt-8 grid gap-6 md:grid-cols-3">
           {[
-            { title: "Saved Goals", value: "3 Active Goals", detail: "Emergency fund, education, home deposit" },
-            { title: "Cards", value: "2 Active Cards", detail: "Platinum debit + travel card" },
-            { title: "Security", value: "Protected", detail: "Biometric + device verification in place" },
+            { title: "Saved Goals", value: "0 goals", detail: "Goal tracking is not connected to a banking service." },
+            { title: "Cards", value: "Not available", detail: "This website cannot issue or manage payment cards." },
+            { title: "Security", value: "Not connected", detail: "No bank security or identity verification service is connected." },
           ].map((item) => (
             <div key={item.title} className="rounded-[24px] bg-white p-5 shadow-sm ring-1 ring-slate-200">
               <div className="text-xs uppercase tracking-[0.2em] text-[#b38a2d]">{item.title}</div>
@@ -227,31 +232,6 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        <div className="mt-8 rounded-[28px] bg-white p-6 shadow-sm ring-1 ring-slate-200">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-2xl text-[#0c2340]">Member Controls</h2>
-            <button onClick={() => updateUserState({ status: user.status === "Active" ? "Pending" : "Active" })} className="rounded-full bg-[#0c2340] px-4 py-2 text-sm font-medium text-white">
-              Toggle Status
-            </button>
-          </div>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {[
-              "Update profile",
-              "Change password",
-              "Freeze card",
-              "Request statement",
-              "Add beneficiary",
-              "Manage alerts",
-              "Approve transfer",
-              "Delete inactive record",
-            ].map((option, index) => (
-              <div key={option} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700">
-                <span aria-hidden="true" className="bank-icon mr-2">{["✏️", "🔑", "🧊", "📄", "👥", "🔔", "✅", "🗑️"][index]}</span>{option}
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </main>
   );

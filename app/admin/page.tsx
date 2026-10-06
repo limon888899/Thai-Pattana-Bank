@@ -12,16 +12,9 @@ import {
   submitUserUpdate,
 } from "@/lib/bank-demo";
 
-const adminFormDefault = {
-  email: "admin@thaipattana.example",
-  password: "admin123",
-};
-
 export default function AdminPage() {
   const [admin, setAdmin] = useState<BankUser | null>(null);
   const [users, setUsersState] = useState<BankUser[]>([]);
-  const [form, setForm] = useState(adminFormDefault);
-  const [error, setError] = useState("");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -42,24 +35,6 @@ export default function AdminPage() {
   }, [users, search]);
 
   if (!admin) {
-    const handleLogin = (event: React.FormEvent) => {
-      event.preventDefault();
-      setError("");
-
-      const adminUser = getUsers().find(
-        (user) => user.role === "admin" && user.email === form.email && user.password === form.password
-      );
-
-      if (!adminUser) {
-        setError("Invalid admin credentials.");
-        return;
-      }
-
-      setCurrentUser(adminUser.id);
-      setAdmin(adminUser);
-      setUsersState(getUsers().filter((user) => user.role === "user"));
-    };
-
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-12">
         <div className="w-full max-w-md rounded-[30px] bg-white p-8 shadow-[0_24px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200">
@@ -67,43 +42,13 @@ export default function AdminPage() {
             <img src="/logo.svg" alt="Thai Pattana Global Commercial Bank PCL" className="h-10 w-10" />
           </div>
           <p className="text-center text-xs font-semibold uppercase tracking-[0.24em] text-[#b38a2d]">Administrative Access</p>
-          <h1 className="mt-3 text-center font-display text-3xl text-[#0c2340]">Control Center</h1>
-
-          {error && (
-            <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
-          )}
-
-          <form onSubmit={handleLogin} className="mt-8 space-y-5">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">Email Address</label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-[#0c2340]"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">Password</label>
-              <input
-                type="password"
-                value={form.password}
-                onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-[#0c2340]"
-                required
-              />
-            </div>
-
-            <button type="submit" className="w-full rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#122d59]">
-              <span aria-hidden="true" className="bank-icon mr-2">🛠️</span>Login to Admin Panel
-            </button>
-          </form>
-
-          <div className="mt-6 text-center text-xs text-slate-500">
-            Demo admin: admin@thaipattana.example / admin123
-          </div>
+          <h1 className="mt-3 text-center font-display text-3xl text-[#0c2340]">Control Center unavailable</h1>
+          <p className="mt-4 text-center text-sm leading-7 text-slate-600">
+            Administrator controls require secure server-side authentication and role permissions. They are not enabled in this public website preview.
+          </p>
+          <Link href="/" className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white">
+            Return to website
+          </Link>
         </div>
       </main>
     );

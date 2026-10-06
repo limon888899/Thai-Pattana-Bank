@@ -7,7 +7,7 @@ import { getUsers, setCurrentUser } from "@/lib/bank-demo";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ accountNumber: "5001000001", password: "demo123" });
+  const [form, setForm] = useState({ accountNumber: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -47,7 +47,7 @@ export default function LoginPage() {
 
         <div className="text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#b38a2d]">Member Access</p>
-          <h1 className="mt-3 font-display text-3xl text-[#0c2340]">Secure Bank Login</h1>
+          <h1 className="mt-3 font-display text-3xl text-[#0c2340]">Member Access</h1>
         </div>
 
         {error && (
@@ -64,7 +64,7 @@ export default function LoginPage() {
               value={form.accountNumber}
               onChange={(event) => setForm((current) => ({ ...current, accountNumber: event.target.value }))}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-[#0c2340] focus:bg-white"
-              placeholder="5001000001"
+              placeholder="Enter your account number"
               required
             />
           </div>
@@ -99,9 +99,6 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <div className="mt-6 text-center text-xs text-slate-500">
-          Demo credentials: account number 5001000001 / password demo123
-        </div>
       </div>
     </main>
   );

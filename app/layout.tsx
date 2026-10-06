@@ -15,7 +15,7 @@ const inter = Inter({
 export const metadata = {
   title: "Thai Pattana Global Commercial Bank PCL | Banking for a Growing Thailand",
   description:
-    "A modern Thai financial institution helping individuals, families, and businesses thrive with confident banking, protection, and long-term growth.",
+    "An independent website preview for Thai Pattana Global Commercial Bank PCL. This site is not connected to real banking or payment services.",
 };
 
 export default function RootLayout({
@@ -26,6 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fraunces.variable} ${inter.variable} font-sans bg-slate-50 text-slate-900`}>
+        <div className="service-preview-notice" role="note">
+          <strong>Independent service preview</strong>
+          <span>This website is not connected to a licensed bank or payment network. Do not enter real personal or banking credentials. No real accounts or funds are created or processed.</span>
+        </div>
         {children}
       </body>
     </html>
