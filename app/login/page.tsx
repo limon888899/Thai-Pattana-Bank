@@ -42,7 +42,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-12">
       <div className="w-full max-w-md rounded-[28px] bg-white p-8 shadow-[0_24px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200">
         <div className="mb-6 flex justify-center">
-          <img src="/logo.png" alt="Siam Heritage Bank" className="h-10 w-auto" />
+          <img src="/logo.svg" alt="Thai Pattana Global Commercial Bank PCL" className="h-10 w-10" />
         </div>
 
         <div className="text-center">

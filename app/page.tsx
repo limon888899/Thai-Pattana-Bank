@@ -29,10 +29,10 @@ export default function Home() {
       <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 md:px-8">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Siam Heritage Bank" className="h-10 w-auto" />
+            <img src="/logo.svg" alt="Thai Pattana Global Commercial Bank PCL" className="h-10 w-10" />
             <div>
-              <div className="font-display text-xl leading-none text-slate-900">Siam Heritage</div>
-              <div className="text-[10px] font-medium uppercase tracking-[0.28em] text-slate-500">Bank</div>
+              <div className="font-display text-lg leading-tight text-slate-900">Thai Pattana Global</div>
+              <div className="text-[9px] font-medium uppercase tracking-[0.16em] text-slate-500">Commercial Bank PCL</div>
             </div>
           </div>
 
@@ -76,7 +76,7 @@ export default function Home() {
               Banking designed for a brighter future.
             </h1>
             <p className="mt-6 max-w-lg text-lg leading-8 text-slate-200">
-              Siam Heritage Bank helps individuals, families, and businesses grow with confidence through secure, modern financial services rooted in trust.
+              Thai Pattana Global Commercial Bank PCL helps individuals, families, and businesses grow with confidence through secure, modern financial services rooted in trust.
             </p>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -153,7 +153,7 @@ export default function Home() {
               We bring together modern banking products with a deeply human approach — helping clients protect savings, move capital confidently, and plan for generations ahead.
             </p>
             <p>
-              From personal accounts to tailored business advisory, Siam Heritage Bank supports the ambition of a stronger, more connected Thailand.
+              From personal accounts to tailored business advisory, Thai Pattana Global Commercial Bank PCL supports the ambition of a stronger, more connected Thailand.
             </p>
           </div>
         </div>
@@ -234,11 +234,11 @@ export default function Home() {
           <span className="text-xs font-semibold uppercase tracking-[0.24em] text-[#d7b56d]">Begin your banking journey</span>
           <h2 className="mt-4 font-display text-4xl text-white">Let’s shape a stronger financial future together.</h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-300">
-            Speak with our team to learn how Siam Heritage Bank can support your personal goals, your business, and your long-term plans.
+            Speak with our team to learn how Thai Pattana Global Commercial Bank PCL can support your personal goals, your business, and your long-term plans.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <a href="mailto:hello@siamheritagebank.com" className="rounded-full bg-[#d7b56d] px-7 py-3.5 text-sm font-semibold text-[#0c2340] transition hover:bg-[#e4c77d]">
-              hello@siamheritagebank.com
+            <a href="mailto:hello@thaipattana.example" className="rounded-full bg-[#d7b56d] px-7 py-3.5 text-sm font-semibold text-[#0c2340] transition hover:bg-[#e4c77d]">
+              hello@thaipattana.example
             </a>
             <a href="tel:+6625550199" className="rounded-full border border-white/25 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10">
               +66 2 555 0199
@@ -250,14 +250,14 @@ export default function Home() {
       <footer className="bg-slate-950 px-6 py-12 text-slate-300 md:px-8">
         <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Siam Heritage Bank" className="h-9 w-auto" />
+            <img src="/logo.svg" alt="Thai Pattana Global Commercial Bank PCL" className="h-9 w-9" />
             <div>
-              <div className="font-display text-lg text-white">Siam Heritage</div>
-              <div className="text-[10px] uppercase tracking-[0.22em] text-slate-400">Bank</div>
+              <div className="font-display text-base text-white">Thai Pattana Global</div>
+              <div className="text-[9px] uppercase tracking-[0.12em] text-slate-400">Commercial Bank PCL</div>
             </div>
           </div>
           <div className="text-sm text-slate-400">
-            © 2026 Siam Heritage Bank. Designed for a confident tomorrow.
+            © 2026 Thai Pattana Global Commercial Bank PCL. Designed for a confident tomorrow.
           </div>
         </div>
       </footer>

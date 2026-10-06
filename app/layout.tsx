@@ -13,7 +13,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Siam Heritage Bank | Banking for a Growing Thailand",
+  title: "Thai Pattana Global Commercial Bank PCL | Banking for a Growing Thailand",
   description:
     "A modern Thai financial institution helping individuals, families, and businesses thrive with confident banking, protection, and long-term growth.",
 };

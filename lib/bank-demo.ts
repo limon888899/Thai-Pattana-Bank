@@ -43,7 +43,7 @@ export const demoUsers: BankUser[] = [
   {
     id: "user-001",
     name: "Nadia Rahman",
-    email: "nadia.rahman@siamheritagebank.com",
+    email: "nadia.rahman@thaipattana.example",
     phone: "+8801700000001",
     country: "Bangladesh",
     accountNumber: "5001000001",
@@ -62,7 +62,7 @@ export const demoUsers: BankUser[] = [
   {
     id: "user-002",
     name: "Arun Wongsawat",
-    email: "arun.wongsawat@siamheritagebank.com",
+    email: "arun.wongsawat@thaipattana.example",
     phone: "+66810000002",
     country: "Thailand",
     accountNumber: "5001000002",
@@ -81,7 +81,7 @@ export const demoUsers: BankUser[] = [
   {
     id: "admin-001",
     name: "Admin Director",
-    email: "admin@siamheritagebank.com",
+    email: "admin@thaipattana.example",
     phone: "+6625550199",
     country: "Thailand",
     accountNumber: "ADMIN-001",
@@ -120,7 +120,7 @@ export const demoTransactions: Transaction[] = [
     method: "Bank transfer",
     status: "Completed",
     date: "2026-10-04",
-    counterparty: "Siam Heritage Payroll",
+    counterparty: "Thai Pattana Global Payroll",
   },
   {
     id: "tx-103",
@@ -153,7 +153,18 @@ export function getUsers(): BankUser[] {
   if (raw) {
     try {
       const parsed = JSON.parse(raw) as BankUser[];
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const migrated = parsed.map((user) => ({
+          ...user,
+          email: user.email.replace(/@siamheritagebank\.com$/i, "@thaipattana.example"),
+        }));
+
+        if (migrated.some((user, index) => user.email !== parsed[index].email)) {
+          window.localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(migrated));
+        }
+
+        return migrated;
+      }
     } catch {
       // ignore invalid storage
     }

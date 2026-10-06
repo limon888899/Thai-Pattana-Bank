@@ -79,10 +79,10 @@ export default function RegisterPage() {
       <div className="mx-auto max-w-4xl rounded-[30px] bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200 md:p-10">
         <div className="mb-8 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Siam Heritage Bank" className="h-10 w-auto" />
+            <img src="/logo.svg" alt="Thai Pattana Global Commercial Bank PCL" className="h-10 w-10" />
             <div>
-              <div className="font-display text-xl text-[#0c2340]">Siam Heritage</div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Bank</div>
+              <div className="font-display text-lg text-[#0c2340]">Thai Pattana Global</div>
+              <div className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500">Commercial Bank PCL</div>
             </div>
           </div>
           <Link href="/login" className="group text-sm font-medium text-[#0c2340]"><span aria-hidden="true" className="bank-icon mr-2">🔐</span>Already member?</Link>

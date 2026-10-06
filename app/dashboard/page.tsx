@@ -63,10 +63,10 @@ export default function DashboardPage() {
       <nav className="border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-6">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Siam Heritage Bank" className="h-9 w-auto" />
+            <img src="/logo.svg" alt="Thai Pattana Global Commercial Bank PCL" className="h-9 w-9" />
             <div>
-              <div className="font-display text-lg text-[#0c2340]">Siam Heritage</div>
-              <div className="text-[9px] font-semibold uppercase tracking-[0.24em] text-slate-500">Private Banking</div>
+              <div className="font-display text-base text-[#0c2340]">Thai Pattana Global</div>
+              <div className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500">Commercial Bank PCL</div>
             </div>
           </div>
 

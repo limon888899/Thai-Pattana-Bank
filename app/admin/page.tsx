@@ -13,7 +13,7 @@ import {
 } from "@/lib/bank-demo";
 
 const adminFormDefault = {
-  email: "admin@siamheritagebank.com",
+  email: "admin@thaipattana.example",
   password: "admin123",
 };
 
@@ -64,7 +64,7 @@ export default function AdminPage() {
       <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-12">
         <div className="w-full max-w-md rounded-[30px] bg-white p-8 shadow-[0_24px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200">
           <div className="mb-6 flex justify-center">
-            <img src="/logo.png" alt="Siam Heritage Bank" className="h-10 w-auto" />
+            <img src="/logo.svg" alt="Thai Pattana Global Commercial Bank PCL" className="h-10 w-10" />
           </div>
           <p className="text-center text-xs font-semibold uppercase tracking-[0.24em] text-[#b38a2d]">Administrative Access</p>
           <h1 className="mt-3 text-center font-display text-3xl text-[#0c2340]">Control Center</h1>
@@ -102,7 +102,7 @@ export default function AdminPage() {
           </form>
 
           <div className="mt-6 text-center text-xs text-slate-500">
-            Demo admin: admin@siamheritagebank.com / admin123
+            Demo admin: admin@thaipattana.example / admin123
           </div>
         </div>
       </main>
@@ -140,10 +140,10 @@ export default function AdminPage() {
       <div className="grid min-h-screen lg:grid-cols-[260px_1fr]">
         <aside className="bg-[#0c2340] p-6 text-white">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Siam Heritage Bank" className="h-9 w-auto" />
+            <img src="/logo.svg" alt="Thai Pattana Global Commercial Bank PCL" className="h-9 w-9" />
             <div>
-              <div className="font-display text-lg">Siam Heritage</div>
-              <div className="text-[8px] uppercase tracking-[0.24em] text-slate-300">Admin Panel</div>
+              <div className="font-display text-base">Thai Pattana Global</div>
+              <div className="text-[8px] uppercase tracking-[0.12em] text-slate-300">Commercial Bank PCL · Admin</div>
             </div>
           </div>
 
