@@ -2,37 +2,52 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import {
-  BankUser,
-  clearCurrentUser,
-  formatCurrency,
-  getCurrentUser,
-  getUsers,
-  setCurrentUser,
-  submitUserUpdate,
-} from "@/lib/bank-demo";
+import { BankUser, formatCurrency } from "@/lib/bank-demo";
+import { supabase } from "@/lib/supabase";
+import { mapProfile } from "@/lib/profiles";
 
 export default function AdminPage() {
   const [admin, setAdmin] = useState<BankUser | null>(null);
   const [users, setUsersState] = useState<BankUser[]>([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const loadUsers = async () => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("role", "user")
+      .order("created_at", { ascending: false });
+    setUsersState((data ?? []).map(mapProfile));
+  };
 
   useEffect(() => {
-    const current = getCurrentUser();
-    if (current && current.role === "admin") {
-      setAdmin(current);
-      setUsersState(getUsers().filter((user) => user.role === "user"));
-    }
+    (async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        const { data: me } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+        if (me && me.role === "admin") {
+          setAdmin(mapProfile(me));
+          await loadUsers();
+        }
+      }
+      setLoading(false);
+    })();
   }, []);
 
   const filteredUsers = useMemo(() => {
     const q = search.toLowerCase();
-    return users.filter((user) =>
-      user.name.toLowerCase().includes(q) ||
-      user.accountNumber.toLowerCase().includes(q) ||
-      user.country.toLowerCase().includes(q)
+    return users.filter(
+      (user) =>
+        user.name.toLowerCase().includes(q) ||
+        user.accountNumber.toLowerCase().includes(q) ||
+        user.country.toLowerCase().includes(q)
     );
   }, [users, search]);
+
+  if (loading) return null;
 
   if (!admin) {
     return (
@@ -42,11 +57,14 @@ export default function AdminPage() {
             <img src="/logo.svg" alt="Thai Pattana Global Commercial Bank PCL" className="h-10 w-10" />
           </div>
           <p className="text-center text-xs font-semibold uppercase tracking-[0.24em] text-[#b38a2d]">Administrative Access</p>
-          <h1 className="mt-3 text-center font-display text-3xl text-[#0c2340]">Control Center unavailable</h1>
+          <h1 className="mt-3 text-center font-display text-3xl text-[#0c2340]">Administrator sign-in required</h1>
           <p className="mt-4 text-center text-sm leading-7 text-slate-600">
-            Administrator controls require secure server-side authentication and role permissions. They are not enabled in this public website preview.
+            Please sign in with an administrator account to open the control dashboard.
           </p>
-          <Link href="/" className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white">
+          <Link href="/login" className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white">
+            Go to sign in
+          </Link>
+          <Link href="/" className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700">
             Return to website
           </Link>
         </div>
@@ -58,25 +76,17 @@ export default function AdminPage() {
   const activeUsers = users.filter((user) => user.status === "Active").length;
   const pendingUsers = users.filter((user) => user.status === "Pending").length;
 
-  const refreshUsers = () => setUsersState(getUsers().filter((user) => user.role === "user"));
-
-  const handleAction = (action: "approve" | "suspend" | "delete", userId: string) => {
-    if (action === "approve") submitUserUpdate(userId, { status: "Active", kycStatus: "Verified" });
-    if (action === "suspend") submitUserUpdate(userId, { status: "Suspended" });
-    if (action === "delete") {
-      const source = getUsers().filter((user) => user.id !== userId);
-      const nextUsers = source.filter((user) => user.role === "user");
-      const allUsers = getUsers().filter((user) => user.id !== userId);
-      setUsersState(nextUsers);
-      const storage = JSON.stringify(allUsers);
-      localStorage.setItem("siam_heritage_users", storage);
-      return;
-    }
-    refreshUsers();
+  const handleAction = async (action: "approve" | "suspend", userId: string) => {
+    const patch =
+      action === "approve"
+        ? { status: "Active", kyc_status: "Verified" }
+        : { status: "Suspended" };
+    await supabase.from("profiles").update(patch).eq("id", userId);
+    await loadUsers();
   };
 
-  const handleLogout = () => {
-    clearCurrentUser();
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     setAdmin(null);
   };
 
@@ -93,7 +103,7 @@ export default function AdminPage() {
           </div>
 
           <nav className="mt-10 space-y-2 text-sm text-slate-200">
-            {['Overview', 'Members', 'Transactions', 'Approvals', 'Security', 'Reports'].map((item, index) => (
+            {["Overview", "Members", "Transactions", "Approvals", "Security", "Reports"].map((item, index) => (
               <div key={item} className="group rounded-xl bg-white/5 px-4 py-3"><span aria-hidden="true" className="bank-icon mr-2">{["🏠", "👥", "💸", "✅", "🛡️", "📊"][index]}</span>{item}</div>
             ))}
           </nav>
@@ -121,7 +131,7 @@ export default function AdminPage() {
               { label: "Total Deposits", value: formatCurrency(totalBalance, "BDT") },
               { label: "Active Members", value: String(activeUsers) },
               { label: "Pending Approvals", value: String(pendingUsers) },
-              { label: "Risk Level", value: "Low" },
+              { label: "Total Members", value: String(users.length) },
             ].map((item) => (
               <div key={item.label} className="rounded-[24px] bg-white p-5 shadow-sm ring-1 ring-slate-200">
                 <div className="text-xs uppercase tracking-[0.2em] text-slate-500">{item.label}</div>
@@ -161,6 +171,7 @@ export default function AdminPage() {
                           <div>
                             <div className="font-semibold text-slate-900">{user.name}</div>
                             <div className="text-xs text-slate-500">{user.accountNumber}</div>
+                            <div className="text-xs text-slate-500">{user.email}</div>
                           </div>
                         </div>
                       </td>
@@ -175,13 +186,15 @@ export default function AdminPage() {
                         <div className="flex flex-wrap gap-2">
                           <button onClick={() => handleAction("approve", user.id)} className="group rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-medium text-white"><span aria-hidden="true" className="bank-icon mr-1">✓</span>Approve</button>
                           <button onClick={() => handleAction("suspend", user.id)} className="group rounded-full bg-amber-500 px-3 py-1.5 text-xs font-medium text-white"><span aria-hidden="true" className="bank-icon mr-1">⏸️</span>Suspend</button>
-                          <button onClick={() => handleAction("delete", user.id)} className="group rounded-full bg-red-600 px-3 py-1.5 text-xs font-medium text-white"><span aria-hidden="true" className="bank-icon mr-1">🗑️</span>Delete</button>
                         </div>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              {filteredUsers.length === 0 && (
+                <p className="py-6 text-center text-sm text-slate-500">No members found.</p>
+              )}
             </div>
           </div>
         </section>
