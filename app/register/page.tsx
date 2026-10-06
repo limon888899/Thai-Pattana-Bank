@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { addNewUser, BankUser, getUsers } from "@/lib/bank-demo";
+import { supabase } from "@/lib/supabase";
 
 const defaultForm = {
   name: "",
@@ -25,7 +25,7 @@ export default function RegisterPage() {
     setForm((current) => ({ ...current, [field]: value }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
 
@@ -39,38 +39,30 @@ export default function RegisterPage() {
       return;
     }
 
-    const users = getUsers();
-    const conflict = users.find((user) => user.email === form.email || user.phone === form.phone);
-    if (conflict) {
-      setError("An account already exists with this email or phone number.");
+    setLoading(true);
+
+    const { error: signUpError } = await supabase.auth.signUp({
+      email: form.email.trim(),
+      password: form.password,
+      options: {
+        data: {
+          name: form.name,
+          phone: form.phone,
+          country: form.country,
+          address: form.address,
+          currency: form.country === "Bangladesh" ? "BDT" : "THB",
+        },
+      },
+    });
+
+    setLoading(false);
+
+    if (signUpError) {
+      setError(signUpError.message);
       return;
     }
 
-    setLoading(true);
-
-    const accountNumber = `5001${String(users.length + 100000).padStart(7, "0")}`;
-    const nextUser: BankUser = {
-      id: `user-${Date.now()}`,
-      name: form.name,
-      email: form.email,
-      phone: form.phone,
-      country: form.country,
-      accountNumber,
-      password: form.password,
-      avatar: "👤",
-      role: "user",
-      status: "Pending",
-      kycStatus: "In review",
-      balance: 0,
-      cardLast4: "0000",
-      currency: form.country === "Bangladesh" ? "BDT" : "THB",
-      address: form.address,
-      createdAt: new Date().toISOString(),
-      lastLogin: new Date().toISOString(),
-    };
-
-    addNewUser(nextUser);
-    setLoading(false);
+    await supabase.auth.signOut();
     router.push("/login");
   };
 
