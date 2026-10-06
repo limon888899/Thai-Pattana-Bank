@@ -1,16 +1,21 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { BankUser, formatCurrency } from "@/lib/bank-demo";
 import { supabase } from "@/lib/supabase";
 import { mapProfile } from "@/lib/profiles";
+
+const STAFF_DOMAIN = "staff.thaipattana.example";
 
 export default function AdminPage() {
   const [admin, setAdmin] = useState<BankUser | null>(null);
   const [users, setUsersState] = useState<BankUser[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const loadUsers = async () => {
     const { data } = await supabase
@@ -37,6 +42,37 @@ export default function AdminPage() {
     })();
   }, []);
 
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError("");
+    setSubmitting(true);
+
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      email: `${username.trim().toLowerCase()}@${STAFF_DOMAIN}`,
+      password,
+    });
+
+    if (signInError || !data.user) {
+      setSubmitting(false);
+      setError("Invalid username or password.");
+      return;
+    }
+
+    const { data: me } = await supabase.from("profiles").select("*").eq("id", data.user.id).single();
+
+    if (!me || me.role !== "admin") {
+      await supabase.auth.signOut();
+      setSubmitting(false);
+      setError("Invalid username or password.");
+      return;
+    }
+
+    setAdmin(mapProfile(me));
+    await loadUsers();
+    setPassword("");
+    setSubmitting(false);
+  };
+
   const filteredUsers = useMemo(() => {
     const q = search.toLowerCase();
     return users.filter(
@@ -57,16 +93,45 @@ export default function AdminPage() {
             <img src="/logo.svg" alt="Thai Pattana Global Commercial Bank PCL" className="h-10 w-10" />
           </div>
           <p className="text-center text-xs font-semibold uppercase tracking-[0.24em] text-[#b38a2d]">Administrative Access</p>
-          <h1 className="mt-3 text-center font-display text-3xl text-[#0c2340]">Administrator sign-in required</h1>
-          <p className="mt-4 text-center text-sm leading-7 text-slate-600">
-            Please sign in with an administrator account to open the control dashboard.
-          </p>
-          <Link href="/login" className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white">
-            Go to sign in
-          </Link>
-          <Link href="/" className="mt-3 inline-flex w-full items-center justify-center rounded-full border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-700">
-            Return to website
-          </Link>
+          <h1 className="mt-3 text-center font-display text-3xl text-[#0c2340]">Control Center</h1>
+
+          {error && (
+            <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+          )}
+
+          <form onSubmit={handleLogin} className="mt-8 space-y-5">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">Username</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-[#0c2340] focus:bg-white"
+                autoComplete="username"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-[#0c2340] focus:bg-white"
+                autoComplete="current-password"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#122d59] disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              <span aria-hidden="true" className="bank-icon mr-2">🔐</span>{submitting ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
         </div>
       </main>
     );
@@ -88,6 +153,7 @@ export default function AdminPage() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setAdmin(null);
+    setUsersState([]);
   };
 
   return (
@@ -110,7 +176,7 @@ export default function AdminPage() {
 
           <div className="mt-10 rounded-2xl bg-white/5 p-4">
             <div className="text-xs uppercase tracking-[0.2em] text-slate-300">Logged in</div>
-            <div className="mt-3 font-medium">{admin.name}</div>
+            <div className="mt-3 font-medium">{admin.name || admin.email}</div>
             <button onClick={handleLogout} className="mt-4 w-full rounded-full border border-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white">
               <span aria-hidden="true" className="bank-icon mr-2">↪️</span>Logout
             </button>
@@ -118,12 +184,9 @@ export default function AdminPage() {
         </aside>
 
         <section className="p-6 md:p-8">
-          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#b38a2d]">Operations</p>
-              <h1 className="mt-3 font-display text-4xl text-[#0c2340]">Banking control dashboard</h1>
-            </div>
-            <Link href="/" className="group rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700"><span aria-hidden="true" className="bank-icon mr-2">🏠</span>Website Home</Link>
+          <div className="mb-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#b38a2d]">Operations</p>
+            <h1 className="mt-3 font-display text-4xl text-[#0c2340]">Banking control dashboard</h1>
           </div>
 
           <div className="mb-8 grid gap-4 md:grid-cols-4">
