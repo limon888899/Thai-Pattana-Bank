@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BankUser, getCurrentUser, getUsers, setUsers } from "@/lib/bank-demo";
+import { BankUser } from "@/lib/bank-demo";
+import { supabase } from "@/lib/supabase";
+import { loadSession } from "@/lib/api";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -13,44 +15,55 @@ export default function ProfilePage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const activeUser = getCurrentUser();
-    if (!activeUser) {
-      router.push("/login");
-      return;
-    }
-
-    setUser(activeUser);
-    setForm({
-      name: activeUser.name,
-      phone: activeUser.phone,
-      country: activeUser.country,
-      address: activeUser.address,
+    loadSession().then((activeUser) => {
+      if (!activeUser) {
+        router.push("/login");
+        return;
+      }
+      setUser(activeUser);
+      setForm({
+        name: activeUser.name,
+        phone: activeUser.phone,
+        country: activeUser.country,
+        address: activeUser.address,
+      });
     });
   }, [router]);
 
   if (!user) return null;
 
-  const handleSave = (event: React.FormEvent) => {
+  const handleSave = async (event: React.FormEvent) => {
     event.preventDefault();
-    const users = getUsers();
-    const nextUsers = users.map((item) => (item.id === user.id ? { ...item, ...form } : item));
-    setUsers(nextUsers);
+    const { error } = await supabase.rpc("update_my_profile", {
+      p_name: form.name,
+      p_phone: form.phone,
+      p_country: form.country,
+      p_address: form.address,
+    });
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
     setUser({ ...user, ...form });
-    setMessage("Profile changes are saved in this browser only; they are not sent to a bank.");
+    setMessage("Profile saved. Changes are stored on this website only; they are not sent to a bank.");
   };
 
-  const handlePasswordChange = (event: React.FormEvent) => {
+  const handlePasswordChange = async (event: React.FormEvent) => {
     event.preventDefault();
     if (password.length < 6) {
       setMessage("Password must be at least 6 characters long.");
       return;
     }
 
-    const users = getUsers();
-    const nextUsers = users.map((item) => (item.id === user.id ? { ...item, password } : item));
-    setUsers(nextUsers);
-    setUser({ ...user, password });
-    setMessage("Password changes are saved in this browser only; they do not update a bank account.");
+    const { error } = await supabase.auth.updateUser({ password });
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    setMessage("Password updated for this website account.");
     setPassword("");
   };
 
@@ -115,7 +128,7 @@ export default function ProfilePage() {
             </button>
 
             <div className="rounded-2xl bg-[#0c2340] p-4 text-sm text-slate-200">
-              <span aria-hidden="true" className="bank-icon mr-2">ℹ️</span>Profile information is stored in this browser only. No bank security or fraud-monitoring service is connected.
+              <span aria-hidden="true" className="bank-icon mr-2">ℹ️</span>Profile information is stored on this website only. No bank security or fraud-monitoring service is connected.
             </div>
           </form>
         </div>
