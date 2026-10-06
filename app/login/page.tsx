@@ -31,9 +31,9 @@ export default function LoginPage() {
     const { data: row } = await supabase.from("profiles").select("*").eq("id", data.user.id).single();
     setLoading(false);
 
-    if (!row) {
+    if (!row || row.role === "admin") {
       await supabase.auth.signOut();
-      setError("Profile not found. Please contact support.");
+      setError("Invalid email or password. Please try again.");
       return;
     }
 
@@ -45,7 +45,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.push(profile.role === "admin" ? "/admin" : "/dashboard");
+    router.push("/dashboard");
   };
 
   return (
@@ -100,12 +100,9 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-6 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
+        <div className="mt-6 grid gap-3 text-sm text-slate-600">
           <Link href="/register" className="group rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">
             <span aria-hidden="true" className="bank-icon mr-2">📝</span>Open New Account
-          </Link>
-          <Link href="/admin" className="group rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">
-            <span aria-hidden="true" className="bank-icon mr-2">🛠️</span>Admin Panel
           </Link>
         </div>
 
