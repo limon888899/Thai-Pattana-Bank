@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { addTransaction, formatCurrency, getCurrentUser, getUsers, setUsers, BankUser } from "@/lib/bank-demo";
+import { formatCurrency, BankUser } from "@/lib/bank-demo";
+import { supabase } from "@/lib/supabase";
+import { loadSession } from "@/lib/api";
 
 export default function CashInPage() {
   const router = useRouter();
@@ -14,17 +16,18 @@ export default function CashInPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const activeUser = getCurrentUser();
-    if (!activeUser) {
-      router.push("/login");
-      return;
-    }
-    setUser(activeUser);
+    loadSession().then((activeUser) => {
+      if (!activeUser) {
+        router.push("/login");
+        return;
+      }
+      setUser(activeUser);
+    });
   }, [router]);
 
   if (!user) return null;
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const value = Number(amount);
     if (!value || value <= 0) {
@@ -32,25 +35,21 @@ export default function CashInPage() {
       return;
     }
 
-    const users = getUsers();
-    const updatedUser = { ...user, balance: user.balance + value };
-    const nextUsers = users.map((item) => (item.id === user.id ? updatedUser : item));
-    setUsers(nextUsers);
-    setUser(updatedUser);
-
-    addTransaction({
-      id: `tx-${Date.now()}`,
-      type: "Cash In",
-      title: `Cash in via ${method}`,
-      amount: value,
-      currency: user.currency,
-      method,
-      status: "Completed",
-      date: new Date().toISOString().slice(0, 10),
-      counterparty: reference || method,
+    const { error } = await supabase.rpc("demo_cash_in", {
+      p_amount: value,
+      p_method: method,
+      p_ref: reference || method,
     });
 
-    setMessage(`Preview only: ${formatCurrency(value, user.currency)} was recorded in this browser. No funds were deposited.`);
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    const fresh = await loadSession();
+    if (fresh) setUser(fresh);
+
+    setMessage(`Preview only: ${formatCurrency(value, user.currency)} was recorded as a simulated balance. No funds were deposited.`);
     setAmount(0);
     setReference("");
   };
@@ -120,7 +119,7 @@ export default function CashInPage() {
             <div className="mt-8 space-y-4 text-sm text-slate-200">
               <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">ℹ️</span>No bank transfer or deposit is connected</div>
               <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📱</span>No SMS or phone notification is sent</div>
-              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">⚠️</span>Amounts only change the local browser preview</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">⚠️</span>Amounts only change this website's preview records</div>
             </div>
           </div>
         </div>
