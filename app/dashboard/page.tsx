@@ -3,17 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import {
-  BankUser,
-  clearCurrentUser,
-  formatCurrency,
-  getCurrentUser,
-  getTransactions,
-  getUsers,
-  getWalletOptions,
-  setUsers,
-  Transaction,
-} from "@/lib/bank-demo";
+import { BankUser, formatCurrency, getWalletOptions, Transaction } from "@/lib/bank-demo";
+import { loadSession, loadTransactions, logout } from "@/lib/api";
 
 const quickStats = [
   { label: "Available Balance", icon: "💰" },
@@ -28,35 +19,27 @@ export default function DashboardPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
-    const activeUser = getCurrentUser();
-    if (!activeUser) {
-      router.push("/login");
-      return;
-    }
-
-    setUser(activeUser);
-    setTransactions(getTransactions());
+    (async () => {
+      const activeUser = await loadSession();
+      if (!activeUser) {
+        router.push("/login");
+        return;
+      }
+      setUser(activeUser);
+      setTransactions(await loadTransactions());
+    })();
   }, [router]);
 
   const walletOptions = useMemo(() => getWalletOptions(user?.country ?? "Bangladesh"), [user]);
 
   if (!user) return null;
 
-  const handleLogout = () => {
-    clearCurrentUser();
+  const handleLogout = async () => {
+    await logout();
     router.push("/");
   };
 
-  const updateUserState = (updates: Partial<BankUser>) => {
-    const users = getUsers();
-    const updatedUser = users.find((item) => item.id === user.id);
-    if (!updatedUser) return;
-
-    const merged = { ...updatedUser, ...updates };
-    const nextUsers = users.map((item) => (item.id === user.id ? merged : item));
-    setUsers(nextUsers);
-    setUser(merged);
-  };
+  const transferCount = transactions.filter((item) => item.type === "Transfer").length;
 
   return (
     <main className="min-h-screen bg-slate-100 text-slate-900">
@@ -93,6 +76,12 @@ export default function DashboardPage() {
       </nav>
 
       <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
+        {user.status !== "Active" && (
+          <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            Your account is {user.status.toLowerCase()}. Cash in, cash out and transfers are available after an administrator approves the account.
+          </div>
+        )}
+
         <div className="mb-8 grid gap-5 lg:grid-cols-[1.5fr_0.8fr]">
           <div className="rounded-[30px] bg-[#0c2340] p-6 text-white shadow-[0_24px_60px_rgba(12,35,64,0.24)] md:p-8">
             <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
@@ -147,7 +136,13 @@ export default function DashboardPage() {
               <div aria-hidden="true" className="bank-icon text-2xl">{item.icon}</div>
               <div className="mt-4 text-sm text-slate-500">{item.label}</div>
               <div className="mt-2 font-display text-2xl text-[#0c2340]">
-                {item.label === "Available Balance" ? formatCurrency(user.balance, user.currency) : item.label === "Monthly Spend" ? formatCurrency(0, user.currency) : "0"}
+                {item.label === "Available Balance"
+                  ? formatCurrency(user.balance, user.currency)
+                  : item.label === "Monthly Spend"
+                  ? formatCurrency(0, user.currency)
+                  : item.label === "Transfers"
+                  ? String(transferCount)
+                  : "0"}
               </div>
             </div>
           ))}
@@ -171,13 +166,13 @@ export default function DashboardPage() {
           <div className="rounded-[28px] bg-white p-6 shadow-sm ring-1 ring-slate-200">
             <div className="mb-5 flex items-center justify-between">
               <h2 className="font-display text-2xl text-[#0c2340]">Recent Activity</h2>
-              <div className="text-sm text-slate-500">Browser preview</div>
+              <div className="text-sm text-slate-500">Preview records</div>
             </div>
 
             <div className="space-y-4">
               {transactions.length === 0 && (
                 <p className="rounded-xl bg-slate-50 px-4 py-5 text-sm text-slate-500">
-                  No activity has been recorded in this browser.
+                  No activity has been recorded yet.
                 </p>
               )}
               {transactions.slice(0, 5).map((item) => (
@@ -187,8 +182,8 @@ export default function DashboardPage() {
                     <div className="mt-1 text-xs uppercase tracking-[0.14em] text-slate-500">{item.method} • {item.date}</div>
                   </div>
                   <div className="text-right">
-                    <div className={`font-semibold ${item.type === "Cash Out" || item.type === "Bill" ? "text-red-600" : "text-emerald-600"}`}>
-                      {item.type === "Cash Out" || item.type === "Bill" ? "-" : "+"}
+                    <div className={`font-semibold ${item.type === "Cash Out" || item.type === "Bill" || item.type === "Transfer" ? "text-red-600" : "text-emerald-600"}`}>
+                      {item.type === "Cash Out" || item.type === "Bill" || item.type === "Transfer" ? "-" : "+"}
                       {formatCurrency(item.amount, item.currency)}
                     </div>
                     <div className="mt-1 text-xs text-slate-500">{item.status}</div>
@@ -216,23 +211,3 @@ export default function DashboardPage() {
               ))}
             </div>
           </div>
-        </div>
-
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {[
-            { title: "Saved Goals", value: "0 goals", detail: "Goal tracking is not connected to a banking service." },
-            { title: "Cards", value: "Not available", detail: "This website cannot issue or manage payment cards." },
-            { title: "Security", value: "Not connected", detail: "No bank security or identity verification service is connected." },
-          ].map((item) => (
-            <div key={item.title} className="rounded-[24px] bg-white p-5 shadow-sm ring-1 ring-slate-200">
-              <div className="text-xs uppercase tracking-[0.2em] text-[#b38a2d]">{item.title}</div>
-              <div className="mt-4 font-display text-3xl text-[#0c2340]">{item.value}</div>
-              <div className="mt-2 text-sm text-slate-600">{item.detail}</div>
-            </div>
-          ))}
-        </div>
-
-      </div>
-    </main>
-  );
-}
