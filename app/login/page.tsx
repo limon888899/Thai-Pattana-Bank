@@ -3,39 +3,49 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getUsers, setCurrentUser } from "@/lib/bank-demo";
+import { supabase } from "@/lib/supabase";
+import { mapProfile } from "@/lib/profiles";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ accountNumber: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError("");
     setLoading(true);
 
-    const users = getUsers();
-    const user = users.find(
-      (item) =>
-        item.accountNumber === form.accountNumber.trim() && item.password === form.password.trim()
-    );
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      email: form.email.trim(),
+      password: form.password,
+    });
 
-    setLoading(false);
-
-    if (!user) {
-      setError("Invalid account number or password. Please try again.");
+    if (signInError || !data.user) {
+      setLoading(false);
+      setError("Invalid email or password. Please try again.");
       return;
     }
 
-    if (user.status === "Suspended") {
+    const { data: row } = await supabase.from("profiles").select("*").eq("id", data.user.id).single();
+    setLoading(false);
+
+    if (!row) {
+      await supabase.auth.signOut();
+      setError("Profile not found. Please contact support.");
+      return;
+    }
+
+    const profile = mapProfile(row);
+
+    if (profile.status === "Suspended") {
+      await supabase.auth.signOut();
       setError("This account is currently suspended. Please contact the branch.");
       return;
     }
 
-    setCurrentUser(user.id);
-    router.push("/dashboard");
+    router.push(profile.role === "admin" ? "/admin" : "/dashboard");
   };
 
   return (
@@ -58,13 +68,13 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700">Account Number</label>
+            <label className="mb-2 block text-sm font-medium text-slate-700">Email Address</label>
             <input
-              type="text"
-              value={form.accountNumber}
-              onChange={(event) => setForm((current) => ({ ...current, accountNumber: event.target.value }))}
+              type="email"
+              value={form.email}
+              onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-[#0c2340] focus:bg-white"
-              placeholder="Enter your account number"
+              placeholder="you@example.com"
               required
             />
           </div>
@@ -95,7 +105,7 @@ export default function LoginPage() {
             <span aria-hidden="true" className="bank-icon mr-2">📝</span>Open New Account
           </Link>
           <Link href="/admin" className="group rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">
-            <span aria-hidden="true" className="bank-icon mr-2">🛠️</span>Admin Login
+            <span aria-hidden="true" className="bank-icon mr-2">🛠️</span>Admin Panel
           </Link>
         </div>
 
