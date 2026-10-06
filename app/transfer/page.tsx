@@ -3,39 +3,35 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { addTransaction, BankUser, formatCurrency, getCurrentUser, getUsers, setUsers } from "@/lib/bank-demo";
+import { BankUser, formatCurrency } from "@/lib/bank-demo";
+import { supabase } from "@/lib/supabase";
+import { loadSession } from "@/lib/api";
 
 export default function TransferPage() {
   const router = useRouter();
   const [user, setUser] = useState<BankUser | null>(null);
   const [amount, setAmount] = useState(2500);
-  const [recipientNumber, setRecipientNumber] = useState("5001000002");
-  const [note, setNote] = useState("Monthly support");
+  const [recipientNumber, setRecipientNumber] = useState("");
+  const [note, setNote] = useState("");
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const activeUser = getCurrentUser();
-    if (!activeUser) {
-      router.push("/login");
-      return;
-    }
-    setUser(activeUser);
+    loadSession().then((activeUser) => {
+      if (!activeUser) {
+        router.push("/login");
+        return;
+      }
+      setUser(activeUser);
+    });
   }, [router]);
 
   if (!user) return null;
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const value = Number(amount);
     if (!value || value <= 0) {
       setMessage("Enter a valid transfer amount.");
-      return;
-    }
-
-    const users = getUsers();
-    const recipient = users.find((item) => item.accountNumber === recipientNumber.trim());
-    if (!recipient || recipient.id === user.id) {
-      setMessage("Recipient account not found or cannot be the same account.");
       return;
     }
 
@@ -44,31 +40,21 @@ export default function TransferPage() {
       return;
     }
 
-    const updatedSender = { ...user, balance: user.balance - value };
-    const updatedRecipient = { ...recipient, balance: recipient.balance + value };
-    const nextUsers = users.map((item) => {
-      if (item.id === user.id) return updatedSender;
-      if (item.id === recipient.id) return updatedRecipient;
-      return item;
+    const { data, error } = await supabase.rpc("demo_transfer", {
+      p_to: recipientNumber,
+      p_amount: value,
+      p_note: note,
     });
 
-    setUsers(nextUsers);
-    setUser(updatedSender);
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
 
-    addTransaction({
-      id: `tx-${Date.now()}`,
-      type: "Transfer",
-      title: `Transfer to ${recipient.name}`,
-      amount: value,
-      currency: user.currency,
-      method: "Internal transfer",
-      status: "Completed",
-      date: new Date().toISOString().slice(0, 10),
-      accountNumber: recipient.accountNumber,
-      counterparty: recipient.name,
-    });
+    const fresh = await loadSession();
+    if (fresh) setUser(fresh);
 
-    setMessage(`Preview only: ${formatCurrency(value, user.currency)} was recorded in this browser for ${recipient.name}. No funds were transferred.`);
+    setMessage(`Preview only: ${formatCurrency(value, user.currency)} was moved to ${data} in the simulated balance. No funds were transferred.`);
     setAmount(0);
     setNote("");
   };
@@ -93,6 +79,7 @@ export default function TransferPage() {
                 value={recipientNumber}
                 onChange={(event) => setRecipientNumber(event.target.value)}
                 className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-[#0c2340]"
+                placeholder="Enter account number"
                 required
               />
             </div>
