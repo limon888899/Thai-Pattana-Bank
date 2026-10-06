@@ -66,7 +66,7 @@ export default function CashOutPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#b38a2d]">Cash Out</p>
             <h1 className="mt-3 font-display text-4xl text-[#0c2340]">Withdraw to wallet</h1>
           </div>
-          <Link href="/dashboard" className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700">Back to dashboard</Link>
+          <Link href="/dashboard" className="group rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700"><span aria-hidden="true" className="bank-icon mr-2">←</span>Back to dashboard</Link>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -100,7 +100,7 @@ export default function CashOutPage() {
             </div>
 
             <button type="submit" className="w-full rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#122d59]">
-              Process Cash Out
+              <span aria-hidden="true" className="bank-icon mr-2">🏧</span>Process Cash Out
             </button>
 
             {message && <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">{message}</div>}
@@ -110,9 +110,9 @@ export default function CashOutPage() {
             <div className="text-xs uppercase tracking-[0.22em] text-[#d7b56d]">Account Balance</div>
             <div className="mt-4 font-display text-4xl">{formatCurrency(user.balance, user.currency)}</div>
             <div className="mt-8 space-y-4 text-sm text-slate-200">
-              <div className="rounded-2xl bg-white/5 p-4">Daily limit protection active</div>
-              <div className="rounded-2xl bg-white/5 p-4">Approval logs stored under secure audit trail</div>
-              <div className="rounded-2xl bg-white/5 p-4">Transaction confirmation SMS enabled</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">🛡️</span>Daily limit protection active</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📋</span>Approval logs stored under secure audit trail</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📱</span>Transaction confirmation SMS enabled</div>
             </div>
           </div>
         </div>

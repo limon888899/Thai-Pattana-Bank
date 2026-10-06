@@ -81,7 +81,7 @@ export default function TransferPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#b38a2d]">Transfer</p>
             <h1 className="mt-3 font-display text-4xl text-[#0c2340]">Send money instantly</h1>
           </div>
-          <Link href="/dashboard" className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700">Back to dashboard</Link>
+          <Link href="/dashboard" className="group rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700"><span aria-hidden="true" className="bank-icon mr-2">←</span>Back to dashboard</Link>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -120,7 +120,7 @@ export default function TransferPage() {
             </div>
 
             <button type="submit" className="w-full rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#122d59]">
-              Confirm Transfer
+              <span aria-hidden="true" className="bank-icon mr-2">🔄</span>Confirm Transfer
             </button>
 
             {message && <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{message}</div>}
@@ -130,9 +130,9 @@ export default function TransferPage() {
             <div className="text-xs uppercase tracking-[0.22em] text-[#d7b56d]">Available Balance</div>
             <div className="mt-4 font-display text-4xl">{formatCurrency(user.balance, user.currency)}</div>
             <div className="mt-8 space-y-4 text-sm text-slate-200">
-              <div className="rounded-2xl bg-white/5 p-4">Protected intra-bank transfer</div>
-              <div className="rounded-2xl bg-white/5 p-4">Real-time confirmation to beneficiary</div>
-              <div className="rounded-2xl bg-white/5 p-4">Transfer fees and limits tracked automatically</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">🔐</span>Protected intra-bank transfer</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">✅</span>Real-time confirmation to beneficiary</div>
+              <div className="rounded-2xl bg-white/5 p-4"><span aria-hidden="true" className="bank-icon mr-2">📊</span>Transfer fees and limits tracked automatically</div>
             </div>
           </div>
         </div>

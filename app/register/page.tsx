@@ -57,7 +57,7 @@ export default function RegisterPage() {
       country: form.country,
       accountNumber,
       password: form.password,
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      avatar: "👤",
       role: "user",
       status: "Pending",
       kycStatus: "In review",
@@ -85,7 +85,7 @@ export default function RegisterPage() {
               <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Bank</div>
             </div>
           </div>
-          <Link href="/login" className="text-sm font-medium text-[#0c2340]">Already member?</Link>
+          <Link href="/login" className="group text-sm font-medium text-[#0c2340]"><span aria-hidden="true" className="bank-icon mr-2">🔐</span>Already member?</Link>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
@@ -93,10 +93,10 @@ export default function RegisterPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#d7b56d]">Open account</p>
             <h1 className="mt-3 font-display text-4xl">Start your secure banking journey.</h1>
             <ul className="mt-8 space-y-4 text-sm text-slate-200">
-              <li>• Instant onboarding with KYC verification</li>
-              <li>• Country-specific mobile wallet cash-in support</li>
-              <li>• Secure account protection and digital access</li>
-              <li>• Dedicated relationship support</li>
+              <li><span aria-hidden="true" className="bank-icon mr-2">🪪</span>Instant onboarding with KYC verification</li>
+              <li><span aria-hidden="true" className="bank-icon mr-2">💳</span>Country-specific mobile wallet cash-in support</li>
+              <li><span aria-hidden="true" className="bank-icon mr-2">🛡️</span>Secure account protection and digital access</li>
+              <li><span aria-hidden="true" className="bank-icon mr-2">🤝</span>Dedicated relationship support</li>
             </ul>
           </div>
 

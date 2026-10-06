@@ -62,7 +62,7 @@ export default function ProfilePage() {
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#b38a2d]">Profile</p>
             <h1 className="mt-3 font-display text-4xl text-[#0c2340]">Member profile & security</h1>
           </div>
-          <Link href="/dashboard" className="rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700">Back to dashboard</Link>
+          <Link href="/dashboard" className="group rounded-full border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700"><span aria-hidden="true" className="bank-icon mr-2">←</span>Back to dashboard</Link>
         </div>
 
         {message && <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">{message}</div>}
@@ -70,7 +70,7 @@ export default function ProfilePage() {
         <div className="grid gap-6 lg:grid-cols-2">
           <form onSubmit={handleSave} className="space-y-5 rounded-[28px] bg-slate-50 p-6 ring-1 ring-slate-200">
             <div className="flex items-center gap-4">
-              <img src={user.avatar} alt={user.name} className="h-16 w-16 rounded-full object-cover" />
+              <div aria-hidden="true" className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#d7b56d]/20 text-3xl">{user.avatar}</div>
               <div>
                 <div className="font-display text-2xl text-[#0c2340]">{user.name}</div>
                 <div className="text-sm text-slate-500">{user.accountNumber}</div>
@@ -98,7 +98,7 @@ export default function ProfilePage() {
             </div>
 
             <button type="submit" className="w-full rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#122d59]">
-              Save Profile
+              <span aria-hidden="true" className="bank-icon mr-2">💾</span>Save Profile
             </button>
           </form>
 
@@ -111,11 +111,11 @@ export default function ProfilePage() {
             </div>
 
             <button type="submit" className="w-full rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-slate-100">
-              Update Password
+              <span aria-hidden="true" className="bank-icon mr-2">🔑</span>Update Password
             </button>
 
             <div className="rounded-2xl bg-[#0c2340] p-4 text-sm text-slate-200">
-              Device verification, encrypted session handling, and fraud alerts are active for this account.
+              <span aria-hidden="true" className="bank-icon mr-2">🛡️</span>Device verification, encrypted session handling, and fraud alerts are active for this account.
             </div>
           </form>
         </div>

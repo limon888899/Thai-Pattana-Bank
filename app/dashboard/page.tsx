@@ -71,11 +71,11 @@ export default function DashboardPage() {
           </div>
 
           <div className="hidden items-center gap-6 text-sm text-slate-600 md:flex">
-            <Link href="/dashboard">Overview</Link>
-            <Link href="/transfer">Transfer</Link>
-            <Link href="/cash-in">Cash In</Link>
-            <Link href="/cash-out">Cash Out</Link>
-            <Link href="/profile">Profile</Link>
+            <Link href="/dashboard" className="group"><span aria-hidden="true" className="bank-icon mr-1">🏠</span>Overview</Link>
+            <Link href="/transfer" className="group"><span aria-hidden="true" className="bank-icon mr-1">🔄</span>Transfer</Link>
+            <Link href="/cash-in" className="group"><span aria-hidden="true" className="bank-icon mr-1">💳</span>Cash In</Link>
+            <Link href="/cash-out" className="group"><span aria-hidden="true" className="bank-icon mr-1">🏧</span>Cash Out</Link>
+            <Link href="/profile" className="group"><span aria-hidden="true" className="bank-icon mr-1">👤</span>Profile</Link>
           </div>
 
           <div className="flex items-center gap-3">
@@ -86,7 +86,7 @@ export default function DashboardPage() {
               onClick={handleLogout}
               className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100"
             >
-              Logout
+              <span aria-hidden="true" className="bank-icon mr-2">↪️</span>Logout
             </button>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default function DashboardPage() {
           <div className="rounded-[30px] bg-[#0c2340] p-6 text-white shadow-[0_24px_60px_rgba(12,35,64,0.24)] md:p-8">
             <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
               <div className="flex items-center gap-4">
-                <img src={user.avatar} alt={user.name} className="h-16 w-16 rounded-full border-2 border-white/70 object-cover" />
+                <div aria-hidden="true" className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 border-white/70 bg-white/10 text-3xl">{user.avatar}</div>
                 <div>
                   <div className="text-xs uppercase tracking-[0.24em] text-[#d7b56d]">Account holder</div>
                   <h1 className="mt-2 font-display text-3xl">{user.name}</h1>
@@ -144,7 +144,7 @@ export default function DashboardPage() {
         <div className="mb-8 grid gap-4 md:grid-cols-4">
           {quickStats.map((item) => (
             <div key={item.label} className="rounded-[24px] bg-white p-5 shadow-sm ring-1 ring-slate-200">
-              <div className="text-2xl">{item.icon}</div>
+              <div aria-hidden="true" className="bank-icon text-2xl">{item.icon}</div>
               <div className="mt-4 text-sm text-slate-500">{item.label}</div>
               <div className="mt-2 font-display text-2xl text-[#0c2340]">
                 {item.label === "Available Balance" ? formatCurrency(user.balance, user.currency) : item.label === "Monthly Spend" ? "৳42,800" : item.label === "Transfers" ? "24" : "08"}
@@ -161,7 +161,7 @@ export default function DashboardPage() {
             { title: "Profile & Security", href: "/profile", icon: "🛡️" },
           ].map((item) => (
             <Link key={item.title} href={item.href} className="rounded-[24px] bg-white p-5 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md">
-              <div className="text-3xl">{item.icon}</div>
+              <div aria-hidden="true" className="bank-icon text-3xl">{item.icon}</div>
               <div className="mt-4 font-display text-2xl text-[#0c2340]">{item.title}</div>
             </Link>
           ))}
@@ -203,7 +203,7 @@ export default function DashboardPage() {
               {walletOptions.map((option) => (
                 <div key={option.code} className="flex items-center justify-between rounded-2xl bg-slate-50 p-4">
                   <div>
-                    <div className="font-medium text-slate-800">{option.name}</div>
+                    <div className="font-medium text-slate-800"><span aria-hidden="true" className="bank-icon mr-2">💸</span>{option.name}</div>
                     <div className="text-xs uppercase tracking-[0.14em] text-slate-500">{option.code}</div>
                   </div>
                   <div className="rounded-full bg-[#d7b56d]/15 px-3 py-1 text-xs font-semibold text-[#0c2340]">{option.fee} fee</div>
@@ -245,9 +245,9 @@ export default function DashboardPage() {
               "Manage alerts",
               "Approve transfer",
               "Delete inactive record",
-            ].map((option) => (
+            ].map((option, index) => (
               <div key={option} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700">
-                {option}
+                <span aria-hidden="true" className="bank-icon mr-2">{["✏️", "🔑", "🧊", "📄", "👥", "🔔", "✅", "🗑️"][index]}</span>{option}
               </div>
             ))}
           </div>

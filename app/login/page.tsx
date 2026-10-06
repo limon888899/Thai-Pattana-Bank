@@ -86,16 +86,16 @@ export default function LoginPage() {
             disabled={loading}
             className="w-full rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#122d59] disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {loading ? "Signing in..." : "Login to Account"}
+            <span aria-hidden="true" className="bank-icon mr-2">🔐</span>{loading ? "Signing in..." : "Login to Account"}
           </button>
         </form>
 
         <div className="mt-6 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
-          <Link href="/register" className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">
-            Open New Account
+          <Link href="/register" className="group rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">
+            <span aria-hidden="true" className="bank-icon mr-2">📝</span>Open New Account
           </Link>
-          <Link href="/admin" className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">
-            Admin Login
+          <Link href="/admin" className="group rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">
+            <span aria-hidden="true" className="bank-icon mr-2">🛠️</span>Admin Login
           </Link>
         </div>
 

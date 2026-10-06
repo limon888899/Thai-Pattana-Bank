@@ -1,14 +1,17 @@
 const services = [
   {
     title: "Everyday Banking",
+    icon: "💳",
     text: "Designed for daily life with secure savings, flexible payment tools, and personalized guidance for every stage of your financial journey.",
   },
   {
     title: "Business Growth",
+    icon: "📈",
     text: "From working capital to treasury support, we help Thai businesses manage cash flow, invest with confidence, and expand responsibly.",
   },
   {
     title: "Wealth Advisory",
+    icon: "🌱",
     text: "Private consultations and portfolio insight to protect capital, plan for the future, and create sustainable financial momentum.",
   },
 ];
@@ -34,21 +37,21 @@ export default function Home() {
           </div>
 
           <div className="hidden items-center gap-8 text-sm text-slate-600 md:flex">
-            <a href="#about" className="transition hover:text-sky-900">About</a>
-            <a href="#services" className="transition hover:text-sky-900">Services</a>
-            <a href="#security" className="transition hover:text-sky-900">Security</a>
-            <a href="#insights" className="transition hover:text-sky-900">Insights</a>
+            <a href="#about" className="group transition hover:text-sky-900"><span aria-hidden="true" className="bank-icon mr-1">🏛️</span>About</a>
+            <a href="#services" className="group transition hover:text-sky-900"><span aria-hidden="true" className="bank-icon mr-1">💼</span>Services</a>
+            <a href="#security" className="group transition hover:text-sky-900"><span aria-hidden="true" className="bank-icon mr-1">🔒</span>Security</a>
+            <a href="#insights" className="group transition hover:text-sky-900"><span aria-hidden="true" className="bank-icon mr-1">📊</span>Insights</a>
           </div>
 
           <div className="flex items-center gap-3">
-            <a href="/login" className="hidden rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 sm:inline-flex">
-              Member Login
+            <a href="/login" className="group hidden rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 sm:inline-flex">
+              <span aria-hidden="true" className="bank-icon mr-2">🔐</span>Member Login
             </a>
-            <a href="/admin" className="hidden rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 sm:inline-flex">
-              Admin Access
+            <a href="/admin" className="group hidden rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 sm:inline-flex">
+              <span aria-hidden="true" className="bank-icon mr-2">🛠️</span>Admin Access
             </a>
-            <a href="#services" className="rounded-full bg-[#0c2340] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#122d59]">
-              Explore Services
+            <a href="#services" className="group rounded-full bg-[#0c2340] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#122d59]">
+              <span aria-hidden="true" className="bank-icon mr-2">✦</span>Explore Services
             </a>
           </div>
         </div>
@@ -59,10 +62,10 @@ export default function Home() {
           <img
             src="/chao-phraya-skyline.jpg"
             alt="Bangkok skyline in the evening"
-            className="h-full w-full object-cover opacity-35"
+            className="bank-skyline h-full w-full object-cover opacity-35"
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0c2340]/95 via-[#0c2340]/80 to-[#0c2340]/50" />
+        <div className="bank-hero-overlay absolute inset-0 bg-gradient-to-r from-[#0c2340]/95 via-[#0c2340]/80 to-[#0c2340]/50" />
 
         <div className="relative mx-auto grid max-w-6xl gap-12 px-6 py-20 md:px-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:py-28">
           <div className="max-w-xl">
@@ -77,11 +80,11 @@ export default function Home() {
             </p>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <a href="#services" className="rounded-full bg-[#d7b56d] px-7 py-3.5 text-center text-sm font-semibold text-[#0c2340] transition hover:bg-[#e4c77d]">
-                Open a conversation
+              <a href="#services" className="group rounded-full bg-[#d7b56d] px-7 py-3.5 text-center text-sm font-semibold text-[#0c2340] transition hover:bg-[#e4c77d]">
+                <span aria-hidden="true" className="bank-icon mr-2">💬</span>Open a conversation
               </a>
-              <a href="#about" className="rounded-full border border-white/30 bg-white/5 px-7 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-white/10">
-                Learn more
+              <a href="#about" className="group rounded-full border border-white/30 bg-white/5 px-7 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-white/10">
+                <span aria-hidden="true" className="bank-icon mr-2">📖</span>Learn more
               </a>
             </div>
           </div>
@@ -166,7 +169,7 @@ export default function Home() {
           <div className="grid gap-6 md:grid-cols-3">
             {services.map((service) => (
               <div key={service.title} className="rounded-[28px] border border-white/10 bg-white/5 p-7 text-white shadow-lg backdrop-blur-sm">
-                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#d7b56d] text-lg font-bold text-[#0c2340]">✦</div>
+                <div aria-hidden="true" className="bank-icon mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#d7b56d] text-lg font-bold text-[#0c2340]">{service.icon}</div>
                 <h3 className="font-display text-2xl text-white">{service.title}</h3>
                 <p className="mt-4 text-sm leading-7 text-slate-300">{service.text}</p>
               </div>
@@ -181,9 +184,9 @@ export default function Home() {
             <span className="text-xs font-semibold uppercase tracking-[0.24em] text-[#a67c2e]">Security and trust</span>
             <h2 className="mt-4 font-display text-4xl text-[#0c2340]">Protected by modern controls and a human-first approach.</h2>
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {highlights.map((item) => (
+              {highlights.map((item, index) => (
                 <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm font-medium text-slate-700">
-                  {item}
+                  <span aria-hidden="true" className="bank-icon mr-2">{["🛡️", "☎️", "🤝", "🇹🇭"][index]}</span>{item}
                 </div>
               ))}
             </div>
