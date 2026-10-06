@@ -4,7 +4,7 @@ import { Fraunces, Inter } from "next/font/google";
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const inter = Inter({
@@ -13,9 +13,9 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Meridian Bank International — Banking Without Borders",
+  title: "Siam Heritage Bank | Banking for a Growing Thailand",
   description:
-    "Send, receive, and manage money across 190+ countries with Meridian Bank International.",
+    "A modern Thai financial institution helping individuals, families, and businesses thrive with confident banking, protection, and long-term growth.",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${fraunces.variable} ${inter.variable} font-sans`}>
+      <body className={`${fraunces.variable} ${inter.variable} font-sans bg-slate-50 text-slate-900`}>
         {children}
       </body>
     </html>

@@ -1,253 +1,203 @@
 "use client";
+
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { addNewUser, BankUser, getUsers } from "@/lib/bank-demo";
 
-export default function Register() {
+const defaultForm = {
+  name: "",
+  email: "",
+  phone: "",
+  country: "Bangladesh",
+  password: "",
+  confirmPassword: "",
+  address: "",
+};
+
+export default function RegisterPage() {
   const router = useRouter();
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    dob: "",
-    country: "",
-    accountType: "personal",
-    currency: "USD",
-    pin: "",
-    confirmPin: "",
-  });
-  const [agreed, setAgreed] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState(defaultForm);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (field: string, value: string) => {
+    setForm((current) => ({ ...current, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     setError("");
 
-    if (form.pin !== form.confirmPin) {
-      setError("PIN and Confirm PIN do not match");
+    if (form.password.length < 6) {
+      setError("Password must be at least 6 characters long.");
       return;
     }
-    if (!agreed) {
-      setError("Please accept the Terms of Service to continue");
+
+    if (form.password !== form.confirmPassword) {
+      setError("Password confirmation does not match.");
+      return;
+    }
+
+    const users = getUsers();
+    const conflict = users.find((user) => user.email === form.email || user.phone === form.phone);
+    if (conflict) {
+      setError("An account already exists with this email or phone number.");
       return;
     }
 
     setLoading(true);
 
-    const { data: existing } = await supabase
-      .from("users")
-      .select("id")
-      .eq("phone", form.phone)
-      .single();
-
-    if (existing) {
-      setError("An account with this phone number already exists");
-      setLoading(false);
-      return;
-    }
-
-    const { error: insertError } = await supabase.from("users").insert({
+    const accountNumber = `5001${String(users.length + 100000).padStart(7, "0")}`;
+    const nextUser: BankUser = {
+      id: `user-${Date.now()}`,
       name: form.name,
       email: form.email,
       phone: form.phone,
-      date_of_birth: form.dob,
       country: form.country,
-      account_type: form.accountType,
-      currency: form.currency,
-      pin: form.pin,
+      accountNumber,
+      password: form.password,
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      role: "user",
+      status: "Pending",
+      kycStatus: "In review",
       balance: 0,
-    });
+      cardLast4: "0000",
+      currency: form.country === "Bangladesh" ? "BDT" : "THB",
+      address: form.address,
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString(),
+    };
 
+    addNewUser(nextUser);
     setLoading(false);
-
-    if (insertError) {
-      setError("Registration failed. Please try again.");
-      console.error(insertError);
-      return;
-    }
-
-    alert("Account created successfully! Please log in.");
     router.push("/login");
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-10">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
-        <div className="flex justify-center mb-6">
-          <img src="/logo.png" alt="Meridian Bank International" className="h-10 w-auto" />
+    <main className="min-h-screen bg-slate-100 px-4 py-12">
+      <div className="mx-auto max-w-4xl rounded-[30px] bg-white p-6 shadow-[0_24px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200 md:p-10">
+        <div className="mb-8 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Siam Heritage Bank" className="h-10 w-auto" />
+            <div>
+              <div className="font-display text-xl text-[#0c2340]">Siam Heritage</div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-500">Bank</div>
+            </div>
+          </div>
+          <Link href="/login" className="text-sm font-medium text-[#0c2340]">Already member?</Link>
         </div>
-        <h2 className="text-2xl font-display text-center text-blue-950 mb-1">
-          Open an Account
-        </h2>
-        <p className="text-center text-slate-500 text-sm mb-6">
-          It only takes a few minutes
-        </p>
 
-        {error && (
-          <p className="bg-red-50 text-red-600 text-sm px-4 py-2 rounded-lg mb-4">
-            {error}
-          </p>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-slate-600 text-sm mb-1">Full Name</label>
-            <input
-              type="text"
-              name="name"
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
-              required
-            />
+        <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="rounded-[28px] bg-[#0c2340] p-7 text-white">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#d7b56d]">Open account</p>
+            <h1 className="mt-3 font-display text-4xl">Start your secure banking journey.</h1>
+            <ul className="mt-8 space-y-4 text-sm text-slate-200">
+              <li>• Instant onboarding with KYC verification</li>
+              <li>• Country-specific mobile wallet cash-in support</li>
+              <li>• Secure account protection and digital access</li>
+              <li>• Dedicated relationship support</li>
+            </ul>
           </div>
 
-          <div>
-            <label className="block text-slate-600 text-sm mb-1">Email Address</label>
-            <input
-              type="email"
-              name="email"
-              onChange={handleChange}
-              placeholder="you@example.com"
-              className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <h2 className="font-display text-3xl text-[#0c2340]">Application Form</h2>
 
-          <div>
-            <label className="block text-slate-600 text-sm mb-1">Phone Number</label>
-            <input
-              type="tel"
-              name="phone"
-              onChange={handleChange}
-              placeholder="+1 234 567 8900"
-              className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
-              required
-            />
-          </div>
+            {error && (
+              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+            )}
 
-          <div>
-            <label className="block text-slate-600 text-sm mb-1">Date of Birth</label>
-            <input
-              type="date"
-              name="dob"
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
-              required
-            />
-          </div>
+            <div className="grid gap-5 md:grid-cols-2">
+              <div className="md:col-span-2">
+                <label className="mb-2 block text-sm font-medium text-slate-700">Full Name</label>
+                <input
+                  type="text"
+                  value={form.name}
+                  onChange={(event) => handleChange("name", event.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-[#0c2340]"
+                  required
+                />
+              </div>
 
-          <div>
-            <label className="block text-slate-600 text-sm mb-1">Country of Residence</label>
-            <select
-              name="country"
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 bg-white"
-              required
-              defaultValue=""
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">Email Address</label>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(event) => handleChange("email", event.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-[#0c2340]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">Phone Number</label>
+                <input
+                  type="tel"
+                  value={form.phone}
+                  onChange={(event) => handleChange("phone", event.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-[#0c2340]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">Country</label>
+                <select
+                  value={form.country}
+                  onChange={(event) => handleChange("country", event.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-[#0c2340]"
+                >
+                  <option>Bangladesh</option>
+                  <option>Thailand</option>
+                  <option>Singapore</option>
+                  <option>United States</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">Password</label>
+                <input
+                  type="password"
+                  value={form.password}
+                  onChange={(event) => handleChange("password", event.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-[#0c2340]"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">Confirm Password</label>
+                <input
+                  type="password"
+                  value={form.confirmPassword}
+                  onChange={(event) => handleChange("confirmPassword", event.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-[#0c2340]"
+                  required
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="mb-2 block text-sm font-medium text-slate-700">Address</label>
+                <textarea
+                  value={form.address}
+                  onChange={(event) => handleChange("address", event.target.value)}
+                  rows={3}
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-[#0c2340]"
+                  required
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#122d59] disabled:cursor-not-allowed disabled:opacity-75"
             >
-              <option value="" disabled>Select your country</option>
-              <option value="Bangladesh">Bangladesh</option>
-              <option value="United States">United States</option>
-              <option value="United Kingdom">United Kingdom</option>
-              <option value="India">India</option>
-              <option value="United Arab Emirates">United Arab Emirates</option>
-              <option value="Canada">Canada</option>
-              <option value="Australia">Australia</option>
-              <option value="Malaysia">Malaysia</option>
-              <option value="Singapore">Singapore</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-slate-600 text-sm mb-1">Account Type</label>
-              <select
-                name="accountType"
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 bg-white"
-                defaultValue="personal"
-              >
-                <option value="personal">Personal</option>
-                <option value="business">Business</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-slate-600 text-sm mb-1">Currency</label>
-              <select
-                name="currency"
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900 bg-white"
-                defaultValue="USD"
-              >
-                <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
-                <option value="BDT">BDT (৳)</option>
-                <option value="AED">AED (د.إ)</option>
-                <option value="INR">INR (₹)</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-slate-600 text-sm mb-1">Set PIN</label>
-              <input
-                type="password"
-                name="pin"
-                onChange={handleChange}
-                maxLength={4}
-                className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-slate-600 text-sm mb-1">Confirm PIN</label>
-              <input
-                type="password"
-                name="confirmPin"
-                onChange={handleChange}
-                maxLength={4}
-                className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
-                required
-              />
-            </div>
-          </div>
-
-          <label className="flex items-start gap-2 text-sm text-slate-600">
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              className="mt-1"
-            />
-            I agree to the Terms of Service and Privacy Policy
-          </label>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-950 text-white py-3 rounded-lg hover:bg-blue-900 disabled:opacity-50 transition"
-          >
-            {loading ? "Creating account..." : "Open Account"}
-          </button>
-        </form>
-
-        <p className="text-center text-slate-500 mt-5 text-sm">
-          Already have an account?{" "}
-          <a href="/login" className="text-blue-950 font-medium">
-            Log in
-          </a>
-        </p>
+              {loading ? "Submitting application..." : "Submit Application"}
+            </button>
+          </form>
+        </div>
       </div>
     </main>
   );

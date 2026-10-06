@@ -1,116 +1,253 @@
 "use client";
-import { useState } from "react";
 
-export default function Dashboard() {
-  const [balance] = useState(12500);
-  const [showSendMoney, setShowSendMoney] = useState(false);
-  const [sendAmount, setSendAmount] = useState("");
-  const [sendNumber, setSendNumber] = useState("");
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import {
+  BankUser,
+  clearCurrentUser,
+  formatCurrency,
+  getCurrentUser,
+  getTransactions,
+  getUsers,
+  getWalletOptions,
+  setUsers,
+  Transaction,
+} from "@/lib/bank-demo";
 
-  const transactions = [
-    { id: 1, type: "Send Money", to: "+1 234 567 8900", amount: -500, date: "Aug 17" },
-    { id: 2, type: "Mobile Recharge", to: "Own number", amount: -100, date: "Aug 16" },
-    { id: 3, type: "Add Money", to: "From bank", amount: 5000, date: "Aug 15" },
-    { id: 4, type: "Bill Payment", to: "Electricity Co.", amount: -750, date: "Aug 14" },
-  ];
+const quickStats = [
+  { label: "Available Balance", icon: "💰" },
+  { label: "Monthly Spend", icon: "📈" },
+  { label: "Transfers", icon: "🔁" },
+  { label: "Saved Goals", icon: "🎯" },
+];
 
-  const handleSend = (e: React.FormEvent) => {
-    e.preventDefault();
-    alert(`$${sendAmount} sent to ${sendNumber} (demo)`);
-    setShowSendMoney(false);
-    setSendAmount("");
-    setSendNumber("");
+export default function DashboardPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<BankUser | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  useEffect(() => {
+    const activeUser = getCurrentUser();
+    if (!activeUser) {
+      router.push("/login");
+      return;
+    }
+
+    setUser(activeUser);
+    setTransactions(getTransactions());
+  }, [router]);
+
+  const walletOptions = useMemo(() => getWalletOptions(user?.country ?? "Bangladesh"), [user]);
+
+  if (!user) return null;
+
+  const handleLogout = () => {
+    clearCurrentUser();
+    router.push("/");
+  };
+
+  const updateUserState = (updates: Partial<BankUser>) => {
+    const users = getUsers();
+    const updatedUser = users.find((item) => item.id === user.id);
+    if (!updatedUser) return;
+
+    const merged = { ...updatedUser, ...updates };
+    const nextUsers = users.map((item) => (item.id === user.id ? merged : item));
+    setUsers(nextUsers);
+    setUser(merged);
   };
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      <nav className="flex justify-between items-center px-6 py-4 bg-white shadow-sm">
-        <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="Meridian Bank International" className="h-8 w-auto" />
-          <h1 className="text-xl font-display text-blue-950">Meridian Bank International</h1>
+    <main className="min-h-screen bg-slate-100 text-slate-900">
+      <nav className="border-b border-slate-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-6">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Siam Heritage Bank" className="h-9 w-auto" />
+            <div>
+              <div className="font-display text-lg text-[#0c2340]">Siam Heritage</div>
+              <div className="text-[9px] font-semibold uppercase tracking-[0.24em] text-slate-500">Private Banking</div>
+            </div>
+          </div>
+
+          <div className="hidden items-center gap-6 text-sm text-slate-600 md:flex">
+            <Link href="/dashboard">Overview</Link>
+            <Link href="/transfer">Transfer</Link>
+            <Link href="/cash-in">Cash In</Link>
+            <Link href="/cash-out">Cash Out</Link>
+            <Link href="/profile">Profile</Link>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 sm:block">
+              {user.country}
+            </div>
+            <button
+              onClick={handleLogout}
+              className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100"
+            >
+              Logout
+            </button>
+          </div>
         </div>
-        <a href="/login" className="text-slate-600 hover:text-blue-950 text-sm">
-          Log out
-        </a>
       </nav>
 
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        <div className="bg-blue-950 text-white rounded-2xl p-6 shadow-md">
-          <p className="text-slate-300 mb-1 text-sm">Current Balance</p>
-          <h2 className="font-display text-4xl">${balance.toLocaleString()}</h2>
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-6">
+        <div className="mb-8 grid gap-5 lg:grid-cols-[1.5fr_0.8fr]">
+          <div className="rounded-[30px] bg-[#0c2340] p-6 text-white shadow-[0_24px_60px_rgba(12,35,64,0.24)] md:p-8">
+            <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-4">
+                <img src={user.avatar} alt={user.name} className="h-16 w-16 rounded-full border-2 border-white/70 object-cover" />
+                <div>
+                  <div className="text-xs uppercase tracking-[0.24em] text-[#d7b56d]">Account holder</div>
+                  <h1 className="mt-2 font-display text-3xl">{user.name}</h1>
+                </div>
+              </div>
+
+              <div className="rounded-2xl bg-white/10 px-4 py-3 text-right">
+                <div className="text-xs uppercase tracking-[0.22em] text-slate-300">Account Number</div>
+                <div className="mt-2 font-display text-2xl">{user.accountNumber}</div>
+              </div>
+            </div>
+
+            <div className="mt-8 grid gap-4 md:grid-cols-2">
+              <div className="rounded-2xl bg-white/5 p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-300">Available Balance</div>
+                <div className="mt-3 font-display text-4xl">{formatCurrency(user.balance, user.currency)}</div>
+              </div>
+              <div className="rounded-2xl bg-white/5 p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-slate-300">KYC Status</div>
+                <div className="mt-3 inline-flex rounded-full bg-emerald-500/15 px-3 py-1 text-sm font-medium text-emerald-200">
+                  {user.kycStatus}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-4 rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-slate-200">
+            <div className="flex items-center justify-between">
+              <div className="text-xs font-semibold uppercase tracking-[0.24em] text-[#b38a2d]">Profile snapshot</div>
+              <div className="rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-700">
+                {user.status}
+              </div>
+            </div>
+
+            <div className="space-y-3 text-sm text-slate-600">
+              <div className="flex justify-between border-b border-slate-200 pb-2"><span>Country</span><span className="font-medium text-slate-900">{user.country}</span></div>
+              <div className="flex justify-between border-b border-slate-200 pb-2"><span>Phone</span><span className="font-medium text-slate-900">{user.phone}</span></div>
+              <div className="flex justify-between border-b border-slate-200 pb-2"><span>Email</span><span className="font-medium text-slate-900">{user.email}</span></div>
+              <div className="flex justify-between"><span>Card</span><span className="font-medium text-slate-900">•••• {user.cardLast4}</span></div>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-3 text-center">
-          {[
-            { label: "Send Money", icon: "💸", action: () => setShowSendMoney(true) },
-            { label: "Recharge", icon: "📱", action: () => alert("Recharge page (coming soon)") },
-            { label: "Bill Pay", icon: "🧾", action: () => alert("Bill Pay page (coming soon)") },
-            { label: "Add Money", icon: "➕", action: () => alert("Add Money page (coming soon)") },
-          ].map((item, i) => (
-            <button
-              key={i}
-              onClick={item.action}
-              className="bg-white rounded-xl p-3 shadow-sm hover:shadow-md transition flex flex-col items-center gap-1"
-            >
-              <span className="text-2xl">{item.icon}</span>
-              <span className="text-xs text-slate-600">{item.label}</span>
-            </button>
+        <div className="mb-8 grid gap-4 md:grid-cols-4">
+          {quickStats.map((item) => (
+            <div key={item.label} className="rounded-[24px] bg-white p-5 shadow-sm ring-1 ring-slate-200">
+              <div className="text-2xl">{item.icon}</div>
+              <div className="mt-4 text-sm text-slate-500">{item.label}</div>
+              <div className="mt-2 font-display text-2xl text-[#0c2340]">
+                {item.label === "Available Balance" ? formatCurrency(user.balance, user.currency) : item.label === "Monthly Spend" ? "৳42,800" : item.label === "Transfers" ? "24" : "08"}
+              </div>
+            </div>
           ))}
         </div>
 
-        {showSendMoney && (
-          <div className="fixed inset-0 bg-black/40 flex items-center justify-center px-4 z-50">
-            <div className="bg-white rounded-2xl p-6 w-full max-w-sm">
-              <h3 className="text-lg font-display text-blue-950 mb-4">Send Money</h3>
-              <form onSubmit={handleSend} className="space-y-4">
-                <input
-                  type="tel"
-                  placeholder="Recipient's phone number"
-                  value={sendNumber}
-                  onChange={(e) => setSendNumber(e.target.value)}
-                  className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
-                  required
-                />
-                <input
-                  type="number"
-                  placeholder="Amount"
-                  value={sendAmount}
-                  onChange={(e) => setSendAmount(e.target.value)}
-                  className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
-                  required
-                />
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setShowSendMoney(false)}
-                    className="flex-1 border py-2.5 rounded-lg text-slate-600 hover:bg-slate-50"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="flex-1 bg-blue-950 text-white py-2.5 rounded-lg hover:bg-blue-900"
-                  >
-                    Send
-                  </button>
+        <div className="mb-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {[
+            { title: "Cash In", href: "/cash-in", icon: "💳" },
+            { title: "Cash Out", href: "/cash-out", icon: "🏧" },
+            { title: "Transfer", href: "/transfer", icon: "🔄" },
+            { title: "Profile & Security", href: "/profile", icon: "🛡️" },
+          ].map((item) => (
+            <Link key={item.title} href={item.href} className="rounded-[24px] bg-white p-5 shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:shadow-md">
+              <div className="text-3xl">{item.icon}</div>
+              <div className="mt-4 font-display text-2xl text-[#0c2340]">{item.title}</div>
+            </Link>
+          ))}
+        </div>
+
+        <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+          <div className="rounded-[28px] bg-white p-6 shadow-sm ring-1 ring-slate-200">
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="font-display text-2xl text-[#0c2340]">Recent Activity</h2>
+              <div className="text-sm text-slate-500">Updated today</div>
+            </div>
+
+            <div className="space-y-4">
+              {transactions.slice(0, 5).map((item) => (
+                <div key={item.id} className="flex items-center justify-between border-b border-slate-200 pb-3 last:border-b-0 last:pb-0">
+                  <div>
+                    <div className="font-medium text-slate-800">{item.title}</div>
+                    <div className="mt-1 text-xs uppercase tracking-[0.14em] text-slate-500">{item.method} • {item.date}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className={`font-semibold ${item.type === "Cash Out" || item.type === "Bill" ? "text-red-600" : "text-emerald-600"}`}>
+                      {item.type === "Cash Out" || item.type === "Bill" ? "-" : "+"}
+                      {formatCurrency(item.amount, item.currency)}
+                    </div>
+                    <div className="mt-1 text-xs text-slate-500">{item.status}</div>
+                  </div>
                 </div>
-              </form>
+              ))}
             </div>
           </div>
-        )}
 
-        <div className="bg-white rounded-2xl shadow-sm p-4">
-          <h3 className="font-display text-lg text-slate-800 mb-3">Recent Transactions</h3>
-          <div className="space-y-3">
-            {transactions.map((t) => (
-              <div key={t.id} className="flex justify-between items-center border-b pb-2 last:border-0">
-                <div>
-                  <p className="text-slate-800 font-medium">{t.type}</p>
-                  <p className="text-slate-400 text-sm">{t.to} · {t.date}</p>
+          <div className="space-y-6 rounded-[28px] bg-white p-6 shadow-sm ring-1 ring-slate-200">
+            <div>
+              <h2 className="font-display text-2xl text-[#0c2340]">Country Wallets</h2>
+              <p className="mt-2 text-sm text-slate-500">Domestic payment networks supported for your region.</p>
+            </div>
+
+            <div className="space-y-3">
+              {walletOptions.map((option) => (
+                <div key={option.code} className="flex items-center justify-between rounded-2xl bg-slate-50 p-4">
+                  <div>
+                    <div className="font-medium text-slate-800">{option.name}</div>
+                    <div className="text-xs uppercase tracking-[0.14em] text-slate-500">{option.code}</div>
+                  </div>
+                  <div className="rounded-full bg-[#d7b56d]/15 px-3 py-1 text-xs font-semibold text-[#0c2340]">{option.fee} fee</div>
                 </div>
-                <p className={`font-semibold ${t.amount > 0 ? "text-green-600" : "text-red-500"}`}>
-                  {t.amount > 0 ? "+" : ""}${Math.abs(t.amount).toLocaleString()}
-                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          {[
+            { title: "Saved Goals", value: "3 Active Goals", detail: "Emergency fund, education, home deposit" },
+            { title: "Cards", value: "2 Active Cards", detail: "Platinum debit + travel card" },
+            { title: "Security", value: "Protected", detail: "Biometric + device verification in place" },
+          ].map((item) => (
+            <div key={item.title} className="rounded-[24px] bg-white p-5 shadow-sm ring-1 ring-slate-200">
+              <div className="text-xs uppercase tracking-[0.2em] text-[#b38a2d]">{item.title}</div>
+              <div className="mt-4 font-display text-3xl text-[#0c2340]">{item.value}</div>
+              <div className="mt-2 text-sm text-slate-600">{item.detail}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 rounded-[28px] bg-white p-6 shadow-sm ring-1 ring-slate-200">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-2xl text-[#0c2340]">Member Controls</h2>
+            <button onClick={() => updateUserState({ status: user.status === "Active" ? "Pending" : "Active" })} className="rounded-full bg-[#0c2340] px-4 py-2 text-sm font-medium text-white">
+              Toggle Status
+            </button>
+          </div>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {[
+              "Update profile",
+              "Change password",
+              "Freeze card",
+              "Request statement",
+              "Add beneficiary",
+              "Manage alerts",
+              "Approve transfer",
+              "Delete inactive record",
+            ].map((option) => (
+              <div key={option} className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700">
+                {option}
               </div>
             ))}
           </div>

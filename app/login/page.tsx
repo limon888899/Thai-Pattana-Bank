@@ -1,93 +1,107 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 
-export default function Login() {
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { getUsers, setCurrentUser } from "@/lib/bank-demo";
+
+export default function LoginPage() {
   const router = useRouter();
-  const [phone, setPhone] = useState("");
-  const [pin, setPin] = useState("");
+  const [form, setForm] = useState({ accountNumber: "5001000001", password: "demo123" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     setError("");
     setLoading(true);
 
-    const { data, error: fetchError } = await supabase
-      .from("users")
-      .select("*")
-      .eq("phone", phone)
-      .eq("pin", pin)
-      .single();
+    const users = getUsers();
+    const user = users.find(
+      (item) =>
+        item.accountNumber === form.accountNumber.trim() && item.password === form.password.trim()
+    );
 
     setLoading(false);
 
-    if (fetchError || !data) {
-      setError("Incorrect phone number or PIN");
+    if (!user) {
+      setError("Invalid account number or password. Please try again.");
       return;
     }
 
-    localStorage.setItem("userId", data.id);
-    localStorage.setItem("userName", data.name);
+    if (user.status === "Suspended") {
+      setError("This account is currently suspended. Please contact the branch.");
+      return;
+    }
+
+    setCurrentUser(user.id);
     router.push("/dashboard");
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-sm">
-        <div className="flex justify-center mb-6">
-          <img src="/logo.png" alt="Meridian Bank International" className="h-10 w-auto" />
+    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-12">
+      <div className="w-full max-w-md rounded-[28px] bg-white p-8 shadow-[0_24px_80px_rgba(15,23,42,0.12)] ring-1 ring-slate-200">
+        <div className="mb-6 flex justify-center">
+          <img src="/logo.png" alt="Siam Heritage Bank" className="h-10 w-auto" />
         </div>
-        <h2 className="text-2xl font-display text-center text-blue-950 mb-6">
-          Log In
-        </h2>
+
+        <div className="text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#b38a2d]">Member Access</p>
+          <h1 className="mt-3 font-display text-3xl text-[#0c2340]">Secure Bank Login</h1>
+        </div>
 
         {error && (
-          <p className="bg-red-50 text-red-600 text-sm px-4 py-2 rounded-lg mb-4">
+          <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
             {error}
-          </p>
+          </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           <div>
-            <label className="block text-slate-600 text-sm mb-1">Phone Number</label>
+            <label className="mb-2 block text-sm font-medium text-slate-700">Account Number</label>
             <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+1 234 567 8900"
-              className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
+              type="text"
+              value={form.accountNumber}
+              onChange={(event) => setForm((current) => ({ ...current, accountNumber: event.target.value }))}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-[#0c2340] focus:bg-white"
+              placeholder="5001000001"
               required
             />
           </div>
+
           <div>
-            <label className="block text-slate-600 text-sm mb-1">PIN</label>
+            <label className="mb-2 block text-sm font-medium text-slate-700">Password</label>
             <input
               type="password"
-              value={pin}
-              onChange={(e) => setPin(e.target.value)}
-              placeholder="4-digit PIN"
-              maxLength={4}
-              className="w-full border rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-900"
+              value={form.password}
+              onChange={(event) => setForm((current) => ({ ...current, password: event.target.value }))}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-[#0c2340] focus:bg-white"
+              placeholder="••••••••"
               required
             />
           </div>
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-950 text-white py-3 rounded-lg hover:bg-blue-900 disabled:opacity-50 transition"
+            className="w-full rounded-full bg-[#0c2340] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#122d59] disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {loading ? "Logging in..." : "Log In"}
+            {loading ? "Signing in..." : "Login to Account"}
           </button>
         </form>
-        <p className="text-center text-slate-500 mt-5 text-sm">
-          Don't have an account?{" "}
-          <a href="/register" className="text-blue-950 font-medium">
-            Open one now
-          </a>
-        </p>
+
+        <div className="mt-6 grid gap-3 text-sm text-slate-600 sm:grid-cols-2">
+          <Link href="/register" className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">
+            Open New Account
+          </Link>
+          <Link href="/admin" className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">
+            Admin Login
+          </Link>
+        </div>
+
+        <div className="mt-6 text-center text-xs text-slate-500">
+          Demo credentials: account number 5001000001 / password demo123
+        </div>
       </div>
     </main>
   );

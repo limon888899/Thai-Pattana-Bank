@@ -1,255 +1,261 @@
+const services = [
+  {
+    title: "Everyday Banking",
+    text: "Designed for daily life with secure savings, flexible payment tools, and personalized guidance for every stage of your financial journey.",
+  },
+  {
+    title: "Business Growth",
+    text: "From working capital to treasury support, we help Thai businesses manage cash flow, invest with confidence, and expand responsibly.",
+  },
+  {
+    title: "Wealth Advisory",
+    text: "Private consultations and portfolio insight to protect capital, plan for the future, and create sustainable financial momentum.",
+  },
+];
+
+const highlights = [
+  "Institutional-grade security",
+  "24/7 customer support",
+  "Expert relationship banking",
+  "Designed for modern Thailand",
+];
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-white text-slate-900">
-      {/* Navbar */}
-      <nav className="sticky top-0 z-50 flex justify-between items-center px-6 md:px-12 py-5 bg-white/90 backdrop-blur border-b border-slate-100">
-        <div className="flex items-center gap-2.5">
-          <img src="/logo.png" alt="Meridian Bank International" className="h-9 w-auto" />
-          <span className="font-display text-lg tracking-tight">
-            Meridian{" "}
-            <span className="text-slate-400 font-sans text-sm font-normal">
-              Bank International
-            </span>
-          </span>
-        </div>
-        <div className="hidden md:flex items-center gap-8 text-sm text-slate-600">
-          <a href="#features" className="hover:text-blue-950">Personal</a>
-          <a href="#features" className="hover:text-blue-950">Business</a>
-          <a href="#security" className="hover:text-blue-950">Security</a>
-          <a href="#" className="hover:text-blue-950">About</a>
-        </div>
-        <div className="flex items-center gap-3">
-          <a href="/login" className="hidden sm:block text-sm text-slate-600 hover:text-blue-950">
-            Log in
-          </a>
-          <a
-            href="/register"
-            className="bg-blue-950 text-white text-sm px-5 py-2.5 rounded-full hover:bg-blue-900 transition"
-          >
-            Open an account
-          </a>
+      <nav className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 md:px-8">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Siam Heritage Bank" className="h-10 w-auto" />
+            <div>
+              <div className="font-display text-xl leading-none text-slate-900">Siam Heritage</div>
+              <div className="text-[10px] font-medium uppercase tracking-[0.28em] text-slate-500">Bank</div>
+            </div>
+          </div>
+
+          <div className="hidden items-center gap-8 text-sm text-slate-600 md:flex">
+            <a href="#about" className="transition hover:text-sky-900">About</a>
+            <a href="#services" className="transition hover:text-sky-900">Services</a>
+            <a href="#security" className="transition hover:text-sky-900">Security</a>
+            <a href="#insights" className="transition hover:text-sky-900">Insights</a>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <a href="/login" className="hidden rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 sm:inline-flex">
+              Member Login
+            </a>
+            <a href="/admin" className="hidden rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 sm:inline-flex">
+              Admin Access
+            </a>
+            <a href="#services" className="rounded-full bg-[#0c2340] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#122d59]">
+              Explore Services
+            </a>
+          </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden px-6 md:px-12 pt-16 pb-24 bg-gradient-to-b from-slate-50 to-white">
-        <svg
-          className="absolute inset-0 w-full h-full opacity-[0.25] pointer-events-none"
-          viewBox="0 0 1000 500"
-          preserveAspectRatio="xMidYMid slice"
-        >
-          <g stroke="#0f172a" strokeWidth="1" fill="none">
-            <path d="M100,250 Q400,80 700,180" />
-            <path d="M150,380 Q450,300 800,120" />
-            <path d="M50,150 Q350,250 900,300" />
-          </g>
-          <g fill="#f59e0b">
-            <circle cx="100" cy="250" r="4" />
-            <circle cx="700" cy="180" r="4" />
-            <circle cx="150" cy="380" r="4" />
-            <circle cx="800" cy="120" r="4" />
-            <circle cx="900" cy="300" r="4" />
-            <circle cx="50" cy="150" r="4" />
-          </g>
-        </svg>
-
-        <div className="relative max-w-3xl mx-auto text-center">
-          <span className="inline-block text-xs tracking-widest uppercase text-amber-600 font-medium mb-5">
-            Trusted in 190+ countries
-          </span>
-          <h1 className="font-display text-4xl md:text-6xl leading-tight tracking-tight mb-6">
-            Banking that moves
-            <br />
-            with the world.
-          </h1>
-          <p className="text-slate-600 text-lg max-w-xl mx-auto mb-9">
-            Send, receive, and manage money across borders in seconds —
-            backed by the security and reliability of a global bank.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/register"
-              className="bg-blue-950 text-white px-8 py-3.5 rounded-full text-base hover:bg-blue-900 transition"
-            >
-              Open a free account
-            </a>
-            <a
-              href="#how"
-              className="border border-slate-300 text-slate-700 px-8 py-3.5 rounded-full text-base hover:border-slate-400 transition"
-            >
-              See how it works
-            </a>
-          </div>
+      <section className="relative overflow-hidden bg-[#f7f3eb]">
+        <div className="absolute inset-0">
+          <img
+            src="/chao-phraya-skyline.jpg"
+            alt="Bangkok skyline in the evening"
+            className="h-full w-full object-cover opacity-35"
+          />
         </div>
-      </section>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0c2340]/95 via-[#0c2340]/80 to-[#0c2340]/50" />
 
-      {/* Stats bar */}
-      <section className="border-y border-slate-100 bg-slate-50">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 divide-x divide-slate-200">
-          {[
-            { stat: "190+", label: "Countries supported" },
-            { stat: "2.4M+", label: "Active customers" },
-            { stat: "$58B+", label: "Transferred yearly" },
-            { stat: "24/7", label: "Live support" },
-          ].map((item, i) => (
-            <div key={i} className="text-center py-8 px-4">
-              <p className="font-display text-2xl md:text-3xl text-blue-950">{item.stat}</p>
-              <p className="text-slate-500 text-sm mt-1">{item.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Features */}
-      <section id="features" className="px-6 md:px-12 py-24 max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <span className="text-xs tracking-widest uppercase text-amber-600 font-medium">
-            What you get
-          </span>
-          <h2 className="font-display text-3xl md:text-4xl mt-3">
-            Everything for global money, in one account
-          </h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-12">
-          {[
-            {
-              title: "Global Transfers",
-              desc: "Send money to any of 190+ countries in seconds, at real exchange rates with transparent fees.",
-            },
-            {
-              title: "Multi-Currency Wallet",
-              desc: "Hold and convert over 40 currencies in a single account, no separate accounts needed.",
-            },
-            {
-              title: "Bill Payments",
-              desc: "Pay electricity, internet, and utility bills in your local currency, anywhere you live.",
-            },
-            {
-              title: "Mobile Top-Up",
-              desc: "Instant mobile recharge for any carrier, in any country, in a few taps.",
-            },
-            {
-              title: "Virtual Cards",
-              desc: "Spend online globally with instant virtual cards you control from the app.",
-            },
-            {
-              title: "Real-Time Alerts",
-              desc: "Track every transaction the moment it happens, with full history and receipts.",
-            },
-          ].map((f, i) => (
-            <div key={i}>
-              <div className="w-10 h-10 rounded-lg bg-blue-950 mb-4 flex items-center justify-center">
-                <span className="text-amber-400 font-display text-sm">{i + 1}</span>
-              </div>
-              <h3 className="font-display text-xl mb-2">{f.title}</h3>
-              <p className="text-slate-600 text-sm leading-relaxed">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section id="how" className="px-6 md:px-12 py-24 bg-blue-950 text-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-xs tracking-widest uppercase text-amber-400 font-medium">
-              Getting started
+        <div className="relative mx-auto grid max-w-6xl gap-12 px-6 py-20 md:px-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:py-28">
+          <div className="max-w-xl">
+            <span className="inline-flex rounded-full border border-[#d7b56d]/60 bg-[#d7b56d]/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#f4d899]">
+              Trusted in Thailand
             </span>
-            <h2 className="font-display text-3xl md:text-4xl mt-3">
-              Three steps to bank without borders
-            </h2>
+            <h1 className="mt-6 font-display text-4xl leading-tight text-white md:text-6xl">
+              Banking designed for a brighter future.
+            </h1>
+            <p className="mt-6 max-w-lg text-lg leading-8 text-slate-200">
+              Siam Heritage Bank helps individuals, families, and businesses grow with confidence through secure, modern financial services rooted in trust.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <a href="#services" className="rounded-full bg-[#d7b56d] px-7 py-3.5 text-center text-sm font-semibold text-[#0c2340] transition hover:bg-[#e4c77d]">
+                Open a conversation
+              </a>
+              <a href="#about" className="rounded-full border border-white/30 bg-white/5 px-7 py-3.5 text-center text-sm font-semibold text-white transition hover:bg-white/10">
+                Learn more
+              </a>
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {[
-              { step: "01", title: "Open your account", desc: "Sign up in minutes with your phone number and basic details." },
-              { step: "02", title: "Add money", desc: "Fund your account from a local bank, card, or transfer." },
-              { step: "03", title: "Send anywhere", desc: "Transfer to any country, pay bills, or spend with your virtual card." },
-            ].map((s, i) => (
-              <div key={i} className="border-t border-white/20 pt-6">
-                <p className="font-display text-amber-400 text-xl mb-3">{s.step}</p>
-                <h3 className="font-display text-lg mb-2">{s.title}</h3>
-                <p className="text-slate-300 text-sm leading-relaxed">{s.desc}</p>
+
+          <div className="rounded-[28px] border border-white/15 bg-white/10 p-5 shadow-2xl backdrop-blur-sm">
+            <div className="rounded-[24px] bg-white p-6 text-slate-900 shadow-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.22em] text-slate-500">Client advisory</p>
+                  <h2 className="mt-2 font-display text-2xl text-[#0c2340]">Smart financial planning</h2>
+                </div>
+                <div className="rounded-full bg-[#f4ecd8] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#0c2340]">
+                  2026
+                </div>
+              </div>
+
+              <div className="mt-8 space-y-4">
+                <div className="rounded-2xl bg-slate-50 p-4">
+                  <div className="flex items-center justify-between text-sm text-slate-500">
+                    <span>Portfolio value</span>
+                    <span>+12.4%</span>
+                  </div>
+                  <div className="mt-3 font-display text-3xl text-[#0c2340]">฿2.84M</div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="rounded-2xl bg-[#0c2340] p-4 text-white">
+                    <p className="text-slate-300">Savings</p>
+                    <p className="mt-2 font-display text-2xl text-[#f4d899]">฿480K</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 p-4">
+                    <p className="text-slate-500">Support</p>
+                    <p className="mt-2 font-display text-2xl text-[#0c2340]">24/7</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-slate-200 bg-[#f8fafc]">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 px-6 py-8 text-center md:grid-cols-4 md:px-8">
+          {[
+            { value: "฿48B+", label: "Assets under guidance" },
+            { value: "190K+", label: "Client relationships" },
+            { value: "26", label: "Branches across Thailand" },
+            { value: "99.9%", label: "Service reliability" },
+          ].map((item) => (
+            <div key={item.label} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200/60">
+              <div className="font-display text-3xl text-[#0c2340]">{item.value}</div>
+              <div className="mt-2 text-xs uppercase tracking-[0.18em] text-slate-500">{item.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="about" className="mx-auto max-w-6xl px-6 py-24 md:px-8">
+        <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-[0.24em] text-[#a67c2e]">About our approach</span>
+            <h2 className="mt-4 font-display text-4xl text-[#0c2340]">A financial partner built on trust and long-term value.</h2>
+          </div>
+          <div className="space-y-5 text-lg leading-8 text-slate-600">
+            <p>
+              We bring together modern banking products with a deeply human approach — helping clients protect savings, move capital confidently, and plan for generations ahead.
+            </p>
+            <p>
+              From personal accounts to tailored business advisory, Siam Heritage Bank supports the ambition of a stronger, more connected Thailand.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" className="bg-[#0c2340] px-6 py-24 md:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 max-w-2xl">
+            <span className="text-xs font-semibold uppercase tracking-[0.24em] text-[#d7b56d]">What we offer</span>
+            <h2 className="mt-4 font-display text-4xl text-white">Banking services shaped around real life and long-term ambition.</h2>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {services.map((service) => (
+              <div key={service.title} className="rounded-[28px] border border-white/10 bg-white/5 p-7 text-white shadow-lg backdrop-blur-sm">
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#d7b56d] text-lg font-bold text-[#0c2340]">✦</div>
+                <h3 className="font-display text-2xl text-white">{service.title}</h3>
+                <p className="mt-4 text-sm leading-7 text-slate-300">{service.text}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Security */}
-      <section id="security" className="px-6 md:px-12 py-24 max-w-5xl mx-auto text-center">
-        <span className="text-xs tracking-widest uppercase text-amber-600 font-medium">
-          Security first
-        </span>
-        <h2 className="font-display text-3xl md:text-4xl mt-3 mb-6">
-          Your money, protected at every step
-        </h2>
-        <p className="text-slate-600 max-w-2xl mx-auto mb-12">
-          Every transaction is encrypted end-to-end and monitored in real time
-          for fraud, so you can move money globally with confidence.
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm text-slate-600">
-          {["Bank-grade encryption", "24/7 fraud monitoring", "Regulatory compliance", "PIN & biometric login"].map(
-            (item, i) => (
-              <div key={i} className="border border-slate-200 rounded-xl py-6 px-3">
-                {item}
+      <section id="security" className="mx-auto max-w-6xl px-6 py-24 md:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-[0.24em] text-[#a67c2e]">Security and trust</span>
+            <h2 className="mt-4 font-display text-4xl text-[#0c2340]">Protected by modern controls and a human-first approach.</h2>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {highlights.map((item) => (
+                <div key={item} className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm font-medium text-slate-700">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[32px] bg-[#f7f3eb] p-8 shadow-xl ring-1 ring-slate-200">
+            <div className="rounded-[24px] bg-white p-6 shadow-md ring-1 ring-slate-200">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Risk oversight</span>
+                <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-emerald-700">secure</span>
               </div>
-            )
-          )}
+              <div className="mt-6 font-display text-5xl text-[#0c2340]">99.97%</div>
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Continuous monitoring, proactive compliance, and secure digital infrastructure designed to maintain confidence at every touchpoint.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="px-6 md:px-12 py-20 bg-amber-50 text-center">
-        <h2 className="font-display text-3xl md:text-4xl mb-4">
-          Ready to bank without borders?
-        </h2>
-        <p className="text-slate-600 mb-8">
-          Join millions who already move money globally with Meridian.
-        </p>
-        <a
-          href="/register"
-          className="bg-blue-950 text-white px-8 py-3.5 rounded-full text-base hover:bg-blue-900 transition inline-block"
-        >
-          Open a free account
-        </a>
-      </section>
+      <section id="insights" className="bg-slate-100 px-6 py-24 md:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-12 max-w-2xl">
+            <span className="text-xs font-semibold uppercase tracking-[0.24em] text-[#a67c2e]">Insights</span>
+            <h2 className="mt-4 font-display text-4xl text-[#0c2340]">Ideas that help you plan with confidence.</h2>
+          </div>
 
-      {/* Footer */}
-      <footer className="px-6 md:px-12 py-16 bg-slate-950 text-slate-400 text-sm">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8">
-          <div className="col-span-2">
-            <span className="font-display text-white text-lg">Meridian</span>
-            <p className="mt-3 max-w-xs text-slate-500">
-              Banking that moves with the world. Available in 190+ countries.
-            </p>
-          </div>
-          <div>
-            <p className="text-white mb-3">Product</p>
-            <ul className="space-y-2">
-              <li>Transfers</li>
-              <li>Wallet</li>
-              <li>Virtual Cards</li>
-            </ul>
-          </div>
-          <div>
-            <p className="text-white mb-3">Company</p>
-            <ul className="space-y-2">
-              <li>About</li>
-              <li>Careers</li>
-              <li>Press</li>
-            </ul>
-          </div>
-          <div>
-            <p className="text-white mb-3">Legal</p>
-            <ul className="space-y-2">
-              <li>Privacy Policy</li>
-              <li>Terms of Service</li>
-              <li>Support</li>
-            </ul>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              "How Thai households can build stronger financial resilience.",
+              "What smarter treasury planning looks like for growing businesses.",
+              "Why long-term planning matters more than short-term gains.",
+            ].map((item) => (
+              <article key={item} className="rounded-[28px] bg-white p-7 shadow-sm ring-1 ring-slate-200">
+                <div className="mb-6 h-10 w-10 rounded-full bg-[#d7b56d]/20 text-lg leading-10 text-center text-[#0c2340]">→</div>
+                <p className="text-lg leading-8 text-slate-700">{item}</p>
+              </article>
+            ))}
           </div>
         </div>
-        <div className="max-w-6xl mx-auto mt-12 pt-8 border-t border-slate-800 text-slate-500">
-          © 2026 Meridian Bank International. All rights reserved.
+      </section>
+
+      <section id="contact" className="px-6 py-24 md:px-8">
+        <div className="mx-auto max-w-4xl rounded-[32px] bg-[#0c2340] px-8 py-12 text-center text-white shadow-2xl md:px-12">
+          <span className="text-xs font-semibold uppercase tracking-[0.24em] text-[#d7b56d]">Begin your banking journey</span>
+          <h2 className="mt-4 font-display text-4xl text-white">Let’s shape a stronger financial future together.</h2>
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-slate-300">
+            Speak with our team to learn how Siam Heritage Bank can support your personal goals, your business, and your long-term plans.
+          </p>
+          <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+            <a href="mailto:hello@siamheritagebank.com" className="rounded-full bg-[#d7b56d] px-7 py-3.5 text-sm font-semibold text-[#0c2340] transition hover:bg-[#e4c77d]">
+              hello@siamheritagebank.com
+            </a>
+            <a href="tel:+6625550199" className="rounded-full border border-white/25 px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10">
+              +66 2 555 0199
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <footer className="bg-slate-950 px-6 py-12 text-slate-300 md:px-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Siam Heritage Bank" className="h-9 w-auto" />
+            <div>
+              <div className="font-display text-lg text-white">Siam Heritage</div>
+              <div className="text-[10px] uppercase tracking-[0.22em] text-slate-400">Bank</div>
+            </div>
+          </div>
+          <div className="text-sm text-slate-400">
+            © 2026 Siam Heritage Bank. Designed for a confident tomorrow.
+          </div>
         </div>
       </footer>
     </main>
