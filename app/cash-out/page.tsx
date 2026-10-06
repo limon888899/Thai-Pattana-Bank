@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { addTransaction, formatCurrency, getCurrentUser, getUsers, setUsers, BankUser } from "@/lib/bank-demo";
+import { formatCurrency, BankUser } from "@/lib/bank-demo";
+import { supabase } from "@/lib/supabase";
+import { loadSession } from "@/lib/api";
 
 export default function CashOutPage() {
   const router = useRouter();
@@ -13,17 +15,18 @@ export default function CashOutPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const activeUser = getCurrentUser();
-    if (!activeUser) {
-      router.push("/login");
-      return;
-    }
-    setUser(activeUser);
+    loadSession().then((activeUser) => {
+      if (!activeUser) {
+        router.push("/login");
+        return;
+      }
+      setUser(activeUser);
+    });
   }, [router]);
 
   if (!user) return null;
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const value = Number(amount);
     if (!value || value <= 0) {
@@ -36,25 +39,20 @@ export default function CashOutPage() {
       return;
     }
 
-    const users = getUsers();
-    const updatedUser = { ...user, balance: user.balance - value };
-    const nextUsers = users.map((item) => (item.id === user.id ? updatedUser : item));
-    setUsers(nextUsers);
-    setUser(updatedUser);
-
-    addTransaction({
-      id: `tx-${Date.now()}`,
-      type: "Cash Out",
-      title: `Cash out via ${method}`,
-      amount: value,
-      currency: user.currency,
-      method,
-      status: "Completed",
-      date: new Date().toISOString().slice(0, 10),
-      counterparty: method,
+    const { error } = await supabase.rpc("demo_cash_out", {
+      p_amount: value,
+      p_method: method,
     });
 
-    setMessage(`Preview only: ${formatCurrency(value, user.currency)} was recorded in this browser. No withdrawal or payment occurred.`);
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    const fresh = await loadSession();
+    if (fresh) setUser(fresh);
+
+    setMessage(`Preview only: ${formatCurrency(value, user.currency)} was deducted from the simulated balance. No withdrawal or payment occurred.`);
     setAmount(0);
   };
 
