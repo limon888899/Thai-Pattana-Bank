@@ -47,9 +47,7 @@ export default function Home() {
             <a href="/login" className="group hidden rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 sm:inline-flex">
               <span aria-hidden="true" className="bank-icon mr-2">🔐</span>Member Login
             </a>
-            <a href="/admin" className="group hidden rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 sm:inline-flex">
-              <span aria-hidden="true" className="bank-icon mr-2">🛠️</span>Admin Access
-            </a>
+            
             <a href="#services" className="group rounded-full bg-[#0c2340] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#122d59]">
               <span aria-hidden="true" className="bank-icon mr-2">✦</span>Explore Services
             </a>
